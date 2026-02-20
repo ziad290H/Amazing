@@ -1,4 +1,5 @@
 from typing import List, Tuple, Optional
+import random
 def parse_config(file_path):
     try:
         requirement = ["WIDTH", "PERFECT"]
@@ -20,7 +21,7 @@ class MazeGenerator:
     "S": (0, 1, 4),
     "W": (-1, 0, 8)
     }
-
+    # this dictionnaire is for shared walls, 1 for the current is the 4 for the next wall cell
     OPPOSITE = {1: 4, 2: 8, 4: 1, 8: 2}
 
     def __init__(self, width: int, height: int, seed: Optional[int] = None):
@@ -45,13 +46,33 @@ class MazeGenerator:
                 valid_nighbors.append(nx, ny, bit)
         return valid_nighbors        
 
-    def generate(self, perfect: bool = True) -> None:
-        pass
+    def generate(self, start_x: int, start_y: int) -> None:
+        stack = [(start_x, start_y)]
+        self.visited[start_y][start_x] = True
+        cx, cy = stack[-1]
+        neighbors = self.get_neighbors(cx, cy)
+        while stack:
+            if neighbors:
+                nx, ny, bit = random.choice(neighbors)
+                
+                #oppenning the walls
+                self.grid[cy][cx] &= ~bit
+                self.grid[ny][nx] &= ~self.OPPOSITE[bit]
 
+
+                self.visited[ny][nx] = True
+                stack.append((nx, ny))
+            else:
+                stack.pop()
     def get_shortest_path(self) -> str:
         """Returns the solution as a string of N, E, S, W[cite: 156]."""
         pass
 
-    def save_to_file(self, filename: str) -> None:
+    def save_to_file(self, filename: str, contenant: str) -> None:
         """Writes the hex grid and path to the output file[cite: 145, 155]."""
-        pass
+        try:
+            with open(filename, 'r') as f:
+                f.write(contenant)
+
+MazeGenerator.generate(0, 0)
+
