@@ -36,11 +36,11 @@ class AsciiRenderer:
         }
 
     def _cell_to_display(self, y: int, x: int) -> Tuple[int, int]:
-        return 2 * y + 1, 2 * x + 1        
+        return 3 * y + 1, 3 * x + 1        
 
     def _init_display_grid(self) -> None:
-        rows = 2 * self.height + 1
-        cols = 2 * self.width + 1
+        rows = 3 * self.height + 1
+        cols = 3 * self.width + 1
 
         self.display_grid = [
             [self.EMPTY for _ in range(cols)]
@@ -52,63 +52,62 @@ class AsciiRenderer:
         walls = self._decode_cell(value)
         disp_y, disp_x = self._cell_to_display(y, x)
 
-        # North
         if walls["N"]:
-            self.display_grid[disp_y - 1][disp_x] = self.H_WALL
+            for dx in (-1, 0, 1):
+                self.display_grid[disp_y - 1][disp_x + dx] = self.H_WALL
 
-        # South
         if walls["S"]:
-            self.display_grid[disp_y + 1][disp_x] = self.H_WALL
+            for dx in (-1, 0, 1):
+                self.display_grid[disp_y + 1][disp_x + dx] = self.H_WALL
 
-        # West
         if walls["W"]:
-            self.display_grid[disp_y][disp_x - 1] = self.V_WALL
+            for dy in (-1, 0, 1):
+                self.display_grid[disp_y + dy][disp_x - 1] = self.V_WALL
 
-        # East
         if walls["E"]:
-            self.display_grid[disp_y][disp_x + 1] = self.V_WALL
+            for dy in (-1, 0, 1):
+                self.display_grid[disp_y + dy][disp_x + 1] = self.V_WALL
 
-def _draw_corners(self) -> None:
-    rows = len(self.display_grid)
-    cols = len(self.display_grid[0])
+    def _draw_corners(self) -> None:
+        rows = len(self.display_grid)
+        cols = len(self.display_grid[0])
 
-    for y in range(0, rows, 2):
-        for x in range(0, cols, 2):
+        for y in range(0, rows, 2):
+            for x in range(0, cols, 2):
 
-            up = y > 0 and self.display_grid[y - 1][x] == self.H_WALL
-            down = y < rows - 1 and self.display_grid[y + 1][x] == self.H_WALL
-            left = x > 0 and self.display_grid[y][x - 1] == self.V_WALL
-            right = x < cols - 1 and self.display_grid[y][x + 1] == self.V_WALL
+                up = y > 0 and self.display_grid[y - 1][x] == self.H_WALL
+                down = y < rows - 1 and self.display_grid[y + 1][x] == self.H_WALL
+                left = x > 0 and self.display_grid[y][x - 1] == self.V_WALL
+                right = x < cols - 1 and self.display_grid[y][x + 1] == self.V_WALL
 
-            connections = up + down + left + right
+                connections = up + down + left + right
 
-            if connections == 4:
-                self.display_grid[y][x] = "┼"
-            elif up and down and left:
-                self.display_grid[y][x] = "┤"
-            elif up and down and right:
-                self.display_grid[y][x] = "├"
-            elif left and right and up:
-                self.display_grid[y][x] = "┴"
-            elif left and right and down:
-                self.display_grid[y][x] = "┬"
-            elif down and right:
-                self.display_grid[y][x] = "┌"
-            elif down and left:
-                self.display_grid[y][x] = "┐"
-            elif up and right:
-                self.display_grid[y][x] = "└"
-            elif up and left:
-                self.display_grid[y][x] = "┘"
-            else:
-                self.display_grid[y][x] = "+"
+                if connections == 4:
+                    self.display_grid[y][x] = "┼"
+                elif up and down and left:
+                    self.display_grid[y][x] = "┤"
+                elif up and down and right:
+                    self.display_grid[y][x] = "├"
+                elif left and right and up:
+                    self.display_grid[y][x] = "┴"
+                elif left and right and down:
+                    self.display_grid[y][x] = "┬"
+                elif down and right:
+                    self.display_grid[y][x] = "┌"
+                elif down and left:
+                    self.display_grid[y][x] = "┐"
+                elif up and right:
+                    self.display_grid[y][x] = "└"
+                elif up and left:
+                    self.display_grid[y][x] = "┘"
+                else:
+                    self.display_grid[y][x] = "+"
+
     def _build_grid(self) -> None:
         self._init_display_grid()
-
         for y in range(self.height):
             for x in range(self.width):
                 self._draw_cell(y, x)
-
         self._draw_corners()
 
     def _draw_entry_exit(self) -> None:
