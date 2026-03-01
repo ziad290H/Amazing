@@ -1,158 +1,103 @@
-from typing import Tuple, List, Any, Optional, Set
-from mazegenerator import MazeGenerator
 import curses
-
+from typing import Tuple, Optional, Set, List
 
 class AsciiRenderer:
-    def __init__(self,
-                 maze: "MazeGenerator",
-                 Entry: Tuple[int, int],
-                 Exit: Tuple[int, int]
-                 ) -> None:
-
+    def __init__(self, maze, entry: Tuple[int, int], exit_pos: Tuple[int, int]):
         self.maze = maze
-        self.Entry = Entry
-        self.Exit = Exit
+        self.entry = entry
+        self.exit = exit_pos
 
-        self.height = maze.height
-        self.width = maze.width
-
-        self.display_grid: List[List[str]] = []
-        self.show_path: bool = False
-        self.current_color: int = 1
-
-        self.V_WALL = "│"
-        self.H_WALL = "─"
-        self.CORNER = "+"
-        self.EMPTY = " "
-        self.FULL_BLOCK = "█"
-
-    def _decode_cell(self, value: int) -> dict:
-        return {
-            "N": bool(value & 1),
-            "E": bool(value & 2),
-            "S": bool(value & 4),
-            "W": bool(value & 8),
-        }
-
-    def _cell_to_display(self, y: int, x: int) -> Tuple[int, int]:
-        return 3 * y + 1, 3 * x + 1        
-
-    def _init_display_grid(self) -> None:
-        rows = 3 * self.height + 1
-        cols = 3 * self.width + 1
-
-        self.display_grid = [
-            [self.EMPTY for _ in range(cols)]
-            for _ in range(rows)
-        ]
-
-    def _draw_cell(self, y: int, x: int) -> None:
-        value = self.maze.grid[y][x]
-        walls = self._decode_cell(value)
-        disp_y, disp_x = self._cell_to_display(y, x)
-
-        if walls["N"]:
-            for dx in (-1, 0, 1):
-                self.display_grid[disp_y - 1][disp_x + dx] = self.H_WALL
-
-        if walls["S"]:
-            for dx in (-1, 0, 1):
-                self.display_grid[disp_y + 1][disp_x + dx] = self.H_WALL
-
-        if walls["W"]:
-            for dy in (-1, 0, 1):
-                self.display_grid[disp_y + dy][disp_x - 1] = self.V_WALL
-
-        if walls["E"]:
-            for dy in (-1, 0, 1):
-                self.display_grid[disp_y + dy][disp_x + 1] = self.V_WALL
-
-    def _draw_corners(self) -> None:
-        rows = len(self.display_grid)
-        cols = len(self.display_grid[0])
-
-        for y in range(0, rows, 2):
-            for x in range(0, cols, 2):
-
-                up = y > 0 and self.display_grid[y - 1][x] == self.H_WALL
-                down = y < rows - 1 and self.display_grid[y + 1][x] == self.H_WALL
-                left = x > 0 and self.display_grid[y][x - 1] == self.V_WALL
-                right = x < cols - 1 and self.display_grid[y][x + 1] == self.V_WALL
-
-                connections = up + down + left + right
-
-                if connections == 4:
-                    self.display_grid[y][x] = "┼"
-                elif up and down and left:
-                    self.display_grid[y][x] = "┤"
-                elif up and down and right:
-                    self.display_grid[y][x] = "├"
-                elif left and right and up:
-                    self.display_grid[y][x] = "┴"
-                elif left and right and down:
-                    self.display_grid[y][x] = "┬"
-                elif down and right:
-                    self.display_grid[y][x] = "┌"
-                elif down and left:
-                    self.display_grid[y][x] = "┐"
-                elif up and right:
-                    self.display_grid[y][x] = "└"
-                elif up and left:
-                    self.display_grid[y][x] = "┘"
-                else:
-                    self.display_grid[y][x] = "+"
-
-    def _build_grid(self) -> None:
-        self._init_display_grid()
-        for y in range(self.height):
-            for x in range(self.width):
-                self._draw_cell(y, x)
-        self._draw_corners()
-
-    def _draw_entry_exit(self) -> None:
-        ey, ex = self.Entry
-        disp_y, disp_x = self._cell_to_display(ey, ex)
-        self.display_grid[disp_y][disp_x] = "E"
-
-        ey, ex = self.Exit
-        disp_y, disp_x = self._cell_to_display(ey, ex)
-        self.display_grid[disp_y][disp_x] = "X"
-
-    def _draw_path(self, path: Set[Tuple[int, int]]) -> None:
-        for (y, x) in path:
-            disp_y, disp_x = self._cell_to_display(y, x)
-
-            if self.display_grid[disp_y][disp_x] in ("E", "X"):
-                continue
-
-            self.display_grid[disp_y][disp_x] = "."
-
-    def render(self, stdscr, path: Optional[Set[Tuple[int, int]]] = None) -> None:
+    def render(self, stdscr, path: Optional[List[Tuple[int, int]]] = None):
+        """
+        Renders the maze grid, walls, entry/exit points, and the solution path.
+        """
         stdscr.clear()
+        h, w = self.maze.height, self.maze.width
+        path_set = set(path) if path else set()
+        
+        for y in range(h):
+            for x in range(w):
+                val = self.maze.grid[y][x]
+                py, px = y * 2, x * 4
+                
+                # Draw the corner node
+                stdscr.addstr(py, px, "+")
+                
+                if val == 15:
+                    # Use a specific color pair for the 42 pattern cells
+                    stdscr.addstr(py + 1, px + 1, "███", curses.color_pair(2))
 
-        self._build_grid()
-        self._draw_entry_exit()
+                # North Wall logic (Bit 1)
+                if val & 1:
+                    stdscr.addstr(py, px + 1, "---")
+                else:
+                    stdscr.addstr(py, px + 1, "   ")
+                    
+                # West Wall logic (Bit 8)
+                if val & 8:
+                    stdscr.addstr(py + 1, px, "|")
+                else:
+                    stdscr.addstr(py + 1, px, " ")
 
-        if path:
-            self._draw_path(path)
+                # Cell Content Logic
+                if (x, y) == self.entry:
+                    stdscr.addstr(py + 1, px + 2, "🐒", curses.A_BOLD)
+                elif (x, y) == self.exit:
+                    stdscr.addstr(py + 1, px + 2, "🥥", curses.A_BOLD)
+                elif (x, y) in path_set:
+                    try:
+                        stdscr.addstr(py + 1, px + 2, "🍌")
+                    except curses.error:
+                        stdscr.addstr(py + 1, px + 2, "o", curses.color_pair(1))
 
-        max_y, max_x = stdscr.getmaxyx()
+            # Draw East boundary for the current row
+            stdscr.addstr(y * 2, w * 4, "+")
+            stdscr.addstr(y * 2 + 1, w * 4, "|")
 
-        for y, row in enumerate(self.display_grid):
-            if y >= max_y:
-                break
+        # Draw the final South boundary of the maze
+        for x in range(w):
+            stdscr.addstr(h * 2, x * 4, "+---")
+        stdscr.addstr(h * 2, w * 4, "+")
 
-            line = "".join(row)
-
-            # Prevent horizontal overflow
-            if len(line) > max_x:
-                line = line[:max_x]
-
-            stdscr.addstr(y, 0, line)
-
+        # --- Instructions Block ---
+        instruction_row = (h * 2) + 2
+        instructions = [
+            "CONTROLS:",
+            "  [R] - Regenerate Maze",
+            "  [S] - Toggle Shortest Path",
+            "  [Q] - Quit Application"
+        ]
+        for i, text in enumerate(instructions):
+            try:
+                stdscr.addstr(instruction_row + i, 2, text, curses.A_DIM)
+            except curses.error:
+                pass
+        
         stdscr.refresh()
 
-    def run(self, stdscr, path: Optional[Set[Tuple[int, int]]] = None) -> None:
-        self.render(stdscr, path)
-        stdscr.getch()
+    def run(self, stdscr):
+        curses.start_color()
+        curses.init_pair(1, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+        curses.init_pair(2, curses.COLOR_MAGENTA, curses.COLOR_WHITE)
+        
+        show_solution = False
+        
+        while True:
+            # Re-calculate path every loop to handle regeneration
+            path = self.maze.solve(self.entry, self.exit)
+            self.render(stdscr, path if show_solution else None)
+            
+            key = stdscr.getch()
+            
+            if key in (ord('q'), ord('Q'), 27): # Quit
+                break
+            if key in (ord('s'), ord('S')):     # Toggle Solution
+                show_solution = not show_solution
+            if key in (ord('r'), ord('R')):     # Regenerate
+                # Clear existing state
+                self.maze.grid = [[0xF for _ in range(self.maze.width)] for _ in range(self.maze.height)]
+                self.maze.visited = [[False for _ in range(self.maze.width)] for _ in range(self.maze.height)]
+                # Re-apply logo and generate
+                if hasattr(self.maze, 'apply_42_logo'):
+                    self.maze.apply_42_logo()
+                self.maze.generate(self.entry[0], self.entry[1])

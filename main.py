@@ -1,17 +1,37 @@
-from Ascii_render import AsciiRenderer
-from mazegenerator import MazeGenerator
-
+from sys import argv
 import curses
+from parsing import Parser
+from mazegenerator import MazeGenerator
+from Ascii_render import AsciiRenderer
+from intro import play_intro
 
-def main(stdscr):
-    maze = MazeGenerator(width=20, height=10, seed=42)
-    maze.generate()
+def main(stdscr, config):
+    # Hide the cursor for better visuals
+    play_intro(stdscr)
+    curses.curs_set(0) 
+    
+    maze = MazeGenerator(
+        width=config["WIDTH"], 
+        height=config["HEIGHT"], 
+        seed=config.get("SEED")
+    )
+    maze.apply_42_logo()
+    # Start generation at the entry point
+    maze.generate(config["ENTRY"][0], config["ENTRY"][1])
 
-    entry = (0, 0)
-    exit = (maze.height - 1, maze.width - 1)
-
-    renderer = AsciiRenderer(maze, entry, exit)
+    renderer = AsciiRenderer(maze, config["ENTRY"], config["EXIT"])
+    
+    # This now enters the while loop
     renderer.run(stdscr)
 
 if __name__ == "__main__":
-    curses.wrapper(main)
+    if len(argv) != 2:
+        print("Usage: python3 main.py config.txt")
+        exit(1)
+
+    try:
+        parser = Parser(argv[1])
+        config_data = parser.parse()
+        curses.wrapper(main, config_data)
+    except Exception as e:
+        print(f"Fatal Error: {e}")
