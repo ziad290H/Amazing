@@ -6,8 +6,9 @@ from Ascii_render import AsciiRenderer
 from intro import play_intro
 
 def main(stdscr, config):
-    # Hide the cursor for better visuals
-    play_intro(stdscr)
+    # Capture the emoji chosen by the user
+    player_emoji = play_intro(stdscr)
+    
     curses.curs_set(0) 
     
     maze = MazeGenerator(
@@ -15,14 +16,16 @@ def main(stdscr, config):
         height=config["HEIGHT"], 
         seed=config.get("SEED")
     )
+    
     maze.apply_42_logo()
-    # Start generation at the entry point
     maze.generate(config["ENTRY"][0], config["ENTRY"][1])
 
-    renderer = AsciiRenderer(maze, config["ENTRY"], config["EXIT"])
-    
-    # This now enters the while loop
+    # Pass player_emoji to the renderer
+    renderer = AsciiRenderer(maze, config["ENTRY"], config["EXIT"], player_emoji, config_data)
     renderer.run(stdscr)
+    # This forces the entire terminal background to match Color Pair 1
+    stdscr.bkgd(' ', curses.color_pair(0)) 
+    stdscr.clear()
 
 if __name__ == "__main__":
     if len(argv) != 2:
