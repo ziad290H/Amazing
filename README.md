@@ -1,7 +1,7 @@
 *This project has been created as part of the 42 curriculum by zdaouari, momahdam*
 
 <table>
-<tr><td bgcolor="#095741">
+<tr><td bgcolor="#355872">
 
 ____**Description**
 
@@ -35,7 +35,7 @@ In Player Mode, you select your character (Monkey 🐒 or Rabbit 🐇) before th
 Movement: Use W, A, S, D keys to move the player through the maze paths.
 Once the player hits the wall, a heart is removed from his Health bar.
 </td></tr><tr>
-<tr><td bgcolor="#02a577">
+<tr><td bgcolor="#7AAACE">
 
 ____**Instructions**
 
@@ -48,6 +48,9 @@ run this in terminal : ```pip install pygame```
 Execution:<br>
 ```make run```
 or simply ```make```.
+
+</td></tr><tr>
+<tr><td bgcolor="#79c7ff">
 
 ____**Resources**
 
