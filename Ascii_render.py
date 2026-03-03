@@ -23,9 +23,10 @@ class AsciiRenderer:
         self.music_index = 0
         # Change these strings to your actual filenames later
         self.playlist = [
+            "saha.mp3",
             "Dance_it_out.mp3", 
-            "joy_to_the_world.mp3", 
-            "song3.mp3", 
+            "joy_to_the_world.mp3",
+            "song3.mp3",
             "song4.mp3"
         ]
 

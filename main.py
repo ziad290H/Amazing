@@ -4,6 +4,7 @@ from parsing import Parser
 from mazegenerator import MazeGenerator
 from Ascii_render import AsciiRenderer
 from intro import play_intro
+from hexadecimale import HexEncoder
 
 def main(stdscr, config):
     # Capture the emoji chosen by the user
@@ -16,7 +17,18 @@ def main(stdscr, config):
         height=config["HEIGHT"], 
         seed=config.get("SEED")
     )
-    
+    solution_path = maze.solve(config["ENTRY"], config["EXIT"])
+    encoder = HexEncoder(
+        grid=maze.grid, # Ensure this matches the object structure HexEncoder expects
+        width=config["WIDTH"],
+        height=config["HEIGHT"],
+        entry=config["ENTRY"],
+        exit=config["EXIT"],
+        path=solution_path
+    )
+    with open(config["OUTPUT_FILE"], "w") as f:
+        f.write(encoder.encode())
+
     maze.apply_42_logo()
     maze.generate(config["ENTRY"][0], config["ENTRY"][1])
 

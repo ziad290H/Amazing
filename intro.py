@@ -1,6 +1,32 @@
 import time
 import curses
 
+
+def get_instructions():
+    return [
+        "--- JUNGLE PROTOCOL: MISSION BRIEFING ---",
+        "",
+        "GOAL: Reach the Coconut (🥥) or Flower (🌸) to score points.",
+        "DANGER: Hitting walls reduces Health (❤️ ). 0 Health = Game Over.",
+        "",
+        "CONTROLS:",
+        " [P] PLAY/STOP - Toggle between Free-Look and Control Mode.",
+        " [Arrows]      - Move your character through the jungle.",
+        " [S] SOLVE      - Toggle the shortest path visualization.",
+        " [R] GENERATE   - Create a brand new random maze layout.",
+        "",
+        "CUSTOMIZATION:",
+        " [T] WALL THEME - Cycle colors for the maze boundaries.",
+        " [C] ICON COLOR - Change the color of the Monkey and Exit.",
+        " [M] MUSIC      - Turn the jungle soundtrack ON/OFF.",
+        " [→] NEXT SONG  - Skip to the next track in the playlist.",
+        "",
+        "NOTE: The '42' pattern is encoded in the jungle's DNA.",
+        "It will always remain RED regardless of the Wall Theme.",
+        "",
+        "--- PRESS [Y] AGAIN TO RETURN TO THE JUNGLE ---"
+    ]
+
 def play_intro(stdscr):
     curses.curs_set(0)
     stdscr.clear()
@@ -46,15 +72,7 @@ def play_intro(stdscr):
         # Scenario: User wants the explanation
         if key in [ord('Y'), ord('y')]:
             stdscr.erase()
-            explanation = [
-                "--- HOW TO PLAY AMAZING ---",
-                "1. GOAL: Navigate from START to the EXIT (🥥).",
-                "2. MOVEMENT: Walls are solid ('---' or '|').",
-                "3. THE 42: Magenta blocks (███) are obstacles!",
-                "4. SOLVING: Press 'S' to reveal the Banana Path (🍌).",
-                "",
-                "Press any key to continue..."
-            ]
+            explanation = get_instructions()
             for idx, line in enumerate(explanation):
                 stdscr.addstr(sh//2 - 4 + idx, (sw - len(line))//2, line)
             
