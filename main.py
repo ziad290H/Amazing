@@ -2,7 +2,7 @@ from sys import argv
 import curses
 from parsing import Parser
 from mazegenerator import MazeGenerator
-from Ascii_render import AsciiRenderer
+from ascii_render import AsciiRenderer
 from intro import play_intro
 from hexadecimale import HexEncoder
 
