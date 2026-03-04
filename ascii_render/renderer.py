@@ -135,12 +135,7 @@ class AsciiRenderer:
             exit_pos = (int(ex), int(ey))
             # Note: Ensure your solver expects (x, y) or [y, x] consistently
             path = self.engine.maze.solve(cur_pos, exit_pos)
-            if not path:
-                message = f"No path from {cur_pos} to {exit_pos}\n"
-            else:
-                message = f"we have the path {path}"
-            with open("debug.log", "a") as f:
-                    f.write(f"path from {cur_pos} to {exit_pos}\n, path:{path}")
+
             # 2. Render current frame
             self.render(stdscr, path if show_sol else None, them=them_idx)
 
