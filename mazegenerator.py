@@ -117,46 +117,33 @@ class MazeGenerator:
                 stack.pop()
             yield stack
 
-    def solve(
-        self,
-        start: Tuple[int, int],
-        end: Tuple[int, int]
-    ) -> List[Tuple[int, int]]:
-        """Finds the shortest path between two points using BFS.
-
-        Returns:
-            List[Tuple[int, int]]: The sequence of coordinates for the path.
-        """
+    def solve(self, start: Tuple[int, int], end: Tuple[int, int]) -> List[Tuple[int, int]]:
+        # Standard BFS
         queue = [start]
         parent = {start: None}
-
+    
         while queue:
             curr = queue.pop(0)
             if curr == end:
-                break
-
+                # Reconstruction logic
+                path = []
+                while curr is not None:
+                    path.append(curr)
+                    curr = parent[curr]
+                return path[::-1]
+    
             cx, cy = curr
             val = self.grid[cy][cx]
-
-            # Movement logic based on bitmask (N=1, E=2, S=4, W=8)
-            moves = []
-            if not (val & 1):
-                moves.append((cx, cy - 1))
-            if not (val & 2):
-                moves.append((cx + 1, cy))
-            if not (val & 4):
-                moves.append((cx, cy + 1))
-            if not (val & 8):
-                moves.append((cx - 1, cy))
-
-            for next_node in moves:
-                if next_node not in parent:
-                    parent[next_node] = curr
-                    queue.append(next_node)
-
-        path = []
-        step = end
-        while step:
-            path.append(step)
-            step = parent.get(step)
-        return path[::-1]
+    
+            # N=1, E=2, S=4, W=8
+            # We only move if the BIT is NOT set (meaning the wall is carved out)
+            directions = [((cx, cy - 1), 1), ((cx + 1, cy), 2), 
+                          ((cx, cy + 1), 4), ((cx - 1, cy), 8)]
+    
+            for (nx, ny), bit in directions:
+                if self.in_bounds(nx, ny) and (nx, ny) not in parent:
+                    if not (val & bit): # If there is NO wall in this direction
+                        parent[(nx, ny)] = curr
+                        queue.append((nx, ny))
+        
+        return [] # No path found

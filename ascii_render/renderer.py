@@ -45,7 +45,8 @@ class AsciiRenderer:
     def render(
         self,
         stdscr: Any,
-        path: Optional[List[Tuple[int, int]]] = None
+        path: Optional[List[Tuple[int, int]]] = None,
+        use_color:bool = True
     ) -> None:
         """Draws the current state of the game, HUD, and music status.
 
@@ -59,7 +60,8 @@ class AsciiRenderer:
         path_set = set(path) if path else set()
 
         MazeView.draw_hud(stdscr, self.engine)
-        MazeView.draw_maze(stdscr, self.engine, path_set, self.player_char)
+        MazeView.draw_maze(stdscr, self.engine, path_set, self.player_char,
+                                                        use_color)
         MazeView.draw_controls(stdscr, self.engine, sh, sw)
 
         status_y = (self.engine.maze.height * 2) + 5
@@ -94,6 +96,15 @@ class AsciiRenderer:
         """
         # --- INITIALIZATION ---
         try:
+            curses.start_color()
+            curses.use_default_colors()
+            curses.init_pair(1, curses.COLOR_CYAN, -1)
+            curses.init_pair(2, curses.COLOR_BLUE, -1)
+        except curses.error:
+            pass
+        show_color = True
+        show_sol = False
+        try:
             if not pygame.mixer.get_init():
                 pygame.mixer.init()
             init_track = os.path.join("music", self.engine.playlist[0])
@@ -122,12 +133,21 @@ class AsciiRenderer:
         # --- MAIN GAME LOOP ---
         while True:
             # 1. Update logic: Always get a fresh path from current position to exit
-            cur_pos = (self.engine.player_pos[1], self.engine.player_pos[0])
+            px, py = self.engine.player_pos
+            ex, ey = self.engine.exit
+            cur_pos = (int(px), int(py))
+            exit_pos = (int(ex), int(ey))
             # Note: Ensure your solver expects (x, y) or [y, x] consistently
-            path = self.engine.maze.solve(cur_pos, self.engine.exit)
-            
+            path = self.engine.maze.solve(cur_pos, exit_pos)
+            if not path:
+                message = f"No path from {cur_pos} to {exit_pos}\n"
+            else:
+                message = f"we have the path {path}"
+            with open("debug.log", "a") as f:
+                    f.write(f"path from {cur_pos} to {exit_pos}\n, path:{path}")
+
             # 2. Render current frame
-            self.render(stdscr, path if show_sol else None)
+            self.render(stdscr, path if show_sol else None, use_color=show_color)
 
             # 3. Input Handling
             key = stdscr.getch()
@@ -160,6 +180,8 @@ class AsciiRenderer:
             elif key in (ord('r'), ord('R')):
                 self.engine.regenerate()
                 show_sol = False  # Reset solution view on new maze
+            elif key in (ord('c'), ord('C')):
+                show_color = not show_color
 
             # Movement (Play Mode Only)
             if self.engine.play_mode and key in (

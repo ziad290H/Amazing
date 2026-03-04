@@ -30,7 +30,8 @@ class MazeView:
         stdscr: Any,
         engine: Any,
         path_set: Set[Tuple[int, int]],
-        player_char: str
+        player_char: str,
+        use_color:bool = True
     ) -> None:
         """Renders the maze grid, walls, player, exit, and solution path.
 
@@ -42,19 +43,23 @@ class MazeView:
         """
         offset_y = 2
         h, w = engine.maze.height, engine.maze.width
+        wall_attr = curses.color_pair(1) if use_color else curses.A_NORMAL
+        logo_attr = curses.color_pair(2) if use_color else curses.A_NORMAL
         for y in range(h):
             for x in range(w):
                 val = engine.maze.grid[y][x]
                 py, px = (y * 2) + offset_y, x * 4
                 try:
-                    stdscr.addstr(py, px, "+")
+                    stdscr.addstr(py, px, "+", wall_attr)
                     if val == 15:
                         stdscr.addstr(py + 1, px + 1, "███",
-                                      curses.color_pair(2))
+                                      logo_attr)
                     if val & 1:
-                        stdscr.addstr(py, px + 1, "---")
+                        stdscr.addstr(py, px + 1, "---",
+                                        wall_attr)
                     if val & 8:
-                        stdscr.addstr(py + 1, px, "|")
+                        stdscr.addstr(py + 1, px, "|",
+                                        wall_attr)
 
                     curr = (x, y)
                     if curr == tuple(engine.player_pos):
@@ -72,12 +77,16 @@ class MazeView:
                             stdscr.addstr(py + 1, px + 2, "🥕")
                 except curses.error:
                     pass
-            stdscr.addstr(y * 2 + offset_y, w * 4, "+")
-            stdscr.addstr(y * 2 + 1 + offset_y, w * 4, "|")
+            stdscr.addstr(y * 2 + offset_y, w * 4, "+",
+                                    wall_attr)
+            stdscr.addstr(y * 2 + 1 + offset_y, w * 4, "|",
+                                    wall_attr)
 
         for x in range(w):
-            stdscr.addstr(h * 2 + offset_y, x * 4, "+---")
-        stdscr.addstr(h * 2 + offset_y, w * 4, "+")
+            stdscr.addstr(h * 2 + offset_y, x * 4, "+---",
+                                wall_attr)
+        stdscr.addstr(h * 2 + offset_y, w * 4, "+",
+                                wall_attr)
 
     @staticmethod
     def draw_controls(stdscr: Any, engine: Any, sh: int, sw: int) -> None:

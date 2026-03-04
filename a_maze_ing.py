@@ -34,13 +34,13 @@ def main(stdscr: Any, config: Dict[str, Any]) -> None:
         maze, config["ENTRY"], config["EXIT"], player_emoji, config
     )
 
+    maze.apply_42_logo()
     # Animate maze generation
     for _ in maze.generate(config["ENTRY"][0], config["ENTRY"][1]):
         renderer.render(stdscr)
         stdscr.refresh()
         time.sleep(0.02)
 
-    maze.apply_42_logo()
 
     solution_path = maze.solve(config["ENTRY"], config["EXIT"])
     encoder = HexEncoder(
