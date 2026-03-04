@@ -2,8 +2,9 @@ from sys import argv
 import curses
 from parsing import Parser
 from mazegenerator import MazeGenerator
-from Ascii_render import AsciiRenderer
+from ascii_render import AsciiRenderer
 from intro import play_intro
+from hexadecimale import HexEncoder
 
 def main(stdscr, config):
     # Capture the emoji chosen by the user
@@ -16,10 +17,21 @@ def main(stdscr, config):
         height=config["HEIGHT"], 
         seed=config.get("SEED")
     )
-    
+
     maze.apply_42_logo()
     maze.generate(config["ENTRY"][0], config["ENTRY"][1])
 
+    solution_path = maze.solve(config["ENTRY"], config["EXIT"])
+    encoder = HexEncoder(
+        maze.grid, # Ensure this matches the object structure HexEncoder expects
+        config["WIDTH"],
+        config["HEIGHT"],
+        config["ENTRY"],
+        config["EXIT"],
+        solution_path
+    )
+    with open(config["OUTPUT_FILE"], "w") as f:
+        f.write(encoder.encode())
     # Pass player_emoji to the renderer
     renderer = AsciiRenderer(maze, config["ENTRY"], config["EXIT"], player_emoji, config_data)
     renderer.run(stdscr)

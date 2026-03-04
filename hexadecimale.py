@@ -26,29 +26,30 @@ class HexEncoder:
         self.path = path
 
     def encode(self) -> str:
-        """
-        Docstring for encode
-        the encoder method
-        :return: it return the maze hexadicimal output
-        :rtype: str
-        """
-        hex_grid = []
-        for y in range(0, self.height):
-            row_str = ""
-            for x in range(0, self.width):
-                cell_sum = 0
-                cell = self.grid[y][x]
-                for direction, bit_value in self.bit_map.items():
-                    if cell.walls[direction] is True:
-                        cell_sum += bit_value
-                row_str += self.hex_chars[cell_sum]
-            hex_grid.append(row_str)
-
-        wall_block = "\n".join(hex_grid)
-        output = (
+        # 1. Hex Grid
+        hex_rows = ["".join(f"{cell:X}" for cell in row) for row in self.grid]
+        wall_block = "\n".join(hex_rows)
+        
+        # 2. Convert Coordinate Path to Directional String (N, E, S, W)
+        directions = []
+        for i in range(len(self.path) - 1):
+            curr = self.path[i]
+            nxt = self.path[i+1]
+            
+            dx = nxt[0] - curr[0]
+            dy = nxt[1] - curr[1]
+            
+            if dy == -1: directions.append("N")
+            elif dy == 1: directions.append("S")
+            elif dx == 1: directions.append("E")
+            elif dx == -1: directions.append("W")
+        
+        path_str = "".join(directions)
+    
+        # 3. Assemble SWS format
+        return (
             f"{wall_block}\n\n"
             f"{self.entry[0]},{self.entry[1]}\n"
             f"{self.exit[0]},{self.exit[1]}\n"
-            f"{self.path}"
+            f"{path_str}"
         )
-        return output

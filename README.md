@@ -35,7 +35,11 @@ In Player Mode, you select your character (Monkey 🐒 or Rabbit 🐇) before th
 Movement: Use W, A, S, D keys to move the player through the maze paths.
 Once the player hits the wall, a heart is removed from his Health bar.
 </td></tr><tr>
+<<<<<<< HEAD
 <tr><td bgcolor="#7AAACE">
+=======
+<tr><td bgcolor="#4e87b4">
+>>>>>>> Ziad
 
 ____**Instructions**
 
@@ -50,7 +54,11 @@ Execution:<br>
 or simply ```make```.
 
 </td></tr><tr>
+<<<<<<< HEAD
 <tr><td bgcolor="#79c7ff">
+=======
+<tr><td bgcolor="#2690db">
+>>>>>>> Ziad
 
 ____**Resources**
 
@@ -74,4 +82,8 @@ AI was utilized as a collaborative tool throughout this project for the followin
 Documentation: <br>Assistance in structuring this README to meet the specific requirements of the 42 curriculum.
 
 
+<<<<<<< HEAD
 </table>
+=======
+</table>
+>>>>>>> Ziad
