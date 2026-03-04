@@ -31,7 +31,7 @@ class MazeView:
         engine: Any,
         path_set: Set[Tuple[int, int]],
         player_char: str,
-        use_color:bool = True
+        them:bool = 1
     ) -> None:
         """Renders the maze grid, walls, player, exit, and solution path.
 
@@ -43,8 +43,15 @@ class MazeView:
         """
         offset_y = 2
         h, w = engine.maze.height, engine.maze.width
-        wall_attr = curses.color_pair(1) if use_color else curses.A_NORMAL
-        logo_attr = curses.color_pair(2) if use_color else curses.A_NORMAL
+        if them == 0:
+            wall_attr = curses.A_NORMAL
+            logo_attr = curses.A_NORMAL
+        elif them == 1:
+            wall_attr = curses.color_pair(1)
+            logo_attr = curses.color_pair(2)
+        else:
+            wall_attr = curses.color_pair(3)
+            logo_attr = curses.color_pair(2)
         for y in range(h):
             for x in range(w):
                 val = engine.maze.grid[y][x]

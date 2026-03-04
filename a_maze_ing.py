@@ -30,10 +30,12 @@ def main(stdscr: Any, config: Dict[str, Any]) -> None:
         height=config["HEIGHT"],
         seed=config.get("SEED")
     )
+
     renderer = AsciiRenderer(
         maze, config["ENTRY"], config["EXIT"], player_emoji, config
     )
 
+# Initialize the colors before animating
     maze.apply_42_logo()
     # Animate maze generation
     for _ in maze.generate(config["ENTRY"][0], config["ENTRY"][1]):

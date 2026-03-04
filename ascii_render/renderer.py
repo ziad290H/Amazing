@@ -46,7 +46,7 @@ class AsciiRenderer:
         self,
         stdscr: Any,
         path: Optional[List[Tuple[int, int]]] = None,
-        use_color:bool = True
+        them: int =1
     ) -> None:
         """Draws the current state of the game, HUD, and music status.
 
@@ -55,13 +55,25 @@ class AsciiRenderer:
             path (list, optional): A list of (x, y) tuples to highlight
                 as the solution path. Defaults to None.
         """
+        try:
+            curses.start_color()
+            curses.use_default_colors()
+
+            # Pair 1: Cyan Walls
+            curses.init_pair(1, curses.COLOR_CYAN, -1)
+            # Pair 2: Blue Logo
+            curses.init_pair(2, curses.COLOR_BLUE, -1)
+            # Pair 3: Green Walls (New!)
+            curses.init_pair(3, curses.COLOR_GREEN, -1)
+        except curses.error:
+            pass      
         stdscr.clear()
         sh, sw = stdscr.getmaxyx()
         path_set = set(path) if path else set()
 
         MazeView.draw_hud(stdscr, self.engine)
         MazeView.draw_maze(stdscr, self.engine, path_set, self.player_char,
-                                                        use_color)
+                                                        them)
         MazeView.draw_controls(stdscr, self.engine, sh, sw)
 
         status_y = (self.engine.maze.height * 2) + 5
@@ -95,14 +107,6 @@ class AsciiRenderer:
             stdscr: The main curses window object.
         """
         # --- INITIALIZATION ---
-        try:
-            curses.start_color()
-            curses.use_default_colors()
-            curses.init_pair(1, curses.COLOR_CYAN, -1)
-            curses.init_pair(2, curses.COLOR_BLUE, -1)
-        except curses.error:
-            pass
-        show_color = True
         show_sol = False
         try:
             if not pygame.mixer.get_init():
@@ -112,15 +116,6 @@ class AsciiRenderer:
         except Exception:
             pass
 
-        try:
-            curses.start_color()
-            curses.use_default_colors()
-            if curses.has_colors():
-                curses.init_pair(1, curses.COLOR_YELLOW, -1)
-                curses.init_pair(2, curses.COLOR_MAGENTA, -1)
-        except curses.error:
-            pass
-
         stdscr.keypad(True)
         try:
             curses.curs_set(0)
@@ -128,6 +123,7 @@ class AsciiRenderer:
             pass
         
         # State variable for toggling solution visibility
+        them_idx = 1
         show_sol = False
 
         # --- MAIN GAME LOOP ---
@@ -145,9 +141,8 @@ class AsciiRenderer:
                 message = f"we have the path {path}"
             with open("debug.log", "a") as f:
                     f.write(f"path from {cur_pos} to {exit_pos}\n, path:{path}")
-
             # 2. Render current frame
-            self.render(stdscr, path if show_sol else None, use_color=show_color)
+            self.render(stdscr, path if show_sol else None, them=them_idx)
 
             # 3. Input Handling
             key = stdscr.getch()
@@ -181,7 +176,7 @@ class AsciiRenderer:
                 self.engine.regenerate()
                 show_sol = False  # Reset solution view on new maze
             elif key in (ord('c'), ord('C')):
-                show_color = not show_color
+                them_idx = (them_idx + 1) % 3
 
             # Movement (Play Mode Only)
             if self.engine.play_mode and key in (
