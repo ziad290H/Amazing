@@ -14,7 +14,7 @@ class MazeGenerator:
         self.width = width
         self.height = height
         if seed is not None:
-            random.seed(seed)
+            random.seed(str(seed))
         self.grid = [[0xF for _ in range(width)] for _ in range(height)]
         self.visited = [[False for _ in range(width)] for _ in range(height)]
 
@@ -28,7 +28,7 @@ class MazeGenerator:
                 if x == self.width - 1: self.grid[y][x] |= 2
                 if y == self.height - 1: self.grid[y][x] |= 4
                 if x == 0: self.grid[y][x] |= 8
-    
+
     def apply_42_logo(self) -> None:
         # 5x7 pattern where 1 = fully closed cell (Hex F)
         # This represents a clear '4' and '2'
@@ -87,6 +87,7 @@ class MazeGenerator:
                 stack.append((nx, ny))
             else:
                 stack.pop()
+            yield (stack)
 
     #THIS IS THE BFS!!!!
     def solve(self, start: Tuple[int, int], end: Tuple[int, int]) -> List[Tuple[int, int]]:

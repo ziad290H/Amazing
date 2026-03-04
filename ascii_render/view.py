@@ -35,9 +35,15 @@ class MazeView:
                         stdscr.addstr(py + 1, px + 2, player_char,
                                       curses.A_BOLD)
                     elif curr == engine.exit:
-                        stdscr.addstr(py + 1, px + 2, "🥥", curses.A_BOLD)
+                        if player_char == "🐒":
+                            stdscr.addstr(py + 1, px + 2, "🥥", curses.A_BOLD)
+                        if player_char == "🐇":
+                            stdscr.addstr(py + 1, px + 2, "🌸", curses.A_BOLD)
                     elif curr in path_set:
-                        stdscr.addstr(py + 1, px + 2, "🍌")
+                        if player_char == "🐒":
+                            stdscr.addstr(py + 1, px + 2, "🍌")
+                        elif player_char == "🐇":
+                            stdscr.addstr(py + 1, px + 2, "🥕")
                 except curses.error:
                     pass
             stdscr.addstr(y * 2 + offset_y, w * 4, "+")
@@ -56,7 +62,8 @@ class MazeView:
             stdscr.addstr(inst_row, 0, " " * sw, curses.A_REVERSE)
             btns = [
                 (" M ", "ON/OFF"), (" → ", "NEXT"),
-                (" P ", "PLAY"), (" S ", "SOLVE"), (" Q ", "QUIT")
+                (" P ", "PLAY"), (" S ", "SOLVE"), (" Q ", "QUIT"),
+                (" R ", "REGENERATE MAZE"), (" C ", "CHANGE COLOR")
             ]
             curr_x = 2
             for key, label in btns:

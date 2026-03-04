@@ -60,10 +60,8 @@ class GameEngine:
         return "COLLISION"
 
     def regenerate(self):
-        w, h = self.maze.width, self.maze.height
-        self.maze.grid = [[0xF for _ in range(w)] for _ in range(h)]
-        self.maze.visited = [[False for _ in range(w)] for _ in range(h)]
-        if hasattr(self.maze, 'apply_42_logo'):
-            self.maze.apply_42_logo()
-        self.maze.generate(self.entry[0], self.entry[1])
+        from mazegenerator import MazeGenerator
+        self.maze = MazeGenerator(self.maze.width, self.maze.height)
+        self.maze.apply_42_logo()
+        list(self.maze.generate(self.entry[0], self.entry[1]))
         self.player_pos = list(self.entry)

@@ -9,7 +9,7 @@ class AsciiRenderer:
     def __init__(self, maze, entry, exit_pos, char="🐒", config=None):
         playlist = [
             "saha.mp3", "Dance_it_out.mp3", "joy_to_the_world.mp3",
-            "song3.mp3", "song4.mp3"
+            "game_over.mp3", "summer_joy.mp3"
         ]
         self.engine = GameEngine(maze, entry, exit_pos, playlist)
         self.player_char = char
