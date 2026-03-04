@@ -96,6 +96,6 @@ Momahdam managed the DFS algorithm, rendering animations, parsing logic, and doc
 
 **Retrospective**
 :Our modular architecture worked exceptionally well, allowing for independent testing of algorithms. However, we could improve our early-stage integration testing to avoid the minor UI synchronization issues we faced near the deadline, hearthsystem and peace 18 stuffs.
-</td><tr>
+</td></tr>
 
 </table>
