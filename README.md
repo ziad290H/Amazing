@@ -1,7 +1,7 @@
 *This project has been created as part of the 42 curriculum by zdaouari, momahdam*
 
 <table>
-<tr><td bgcolor="#355872">
+<tr>
 
 ____**Description**
 
@@ -35,7 +35,7 @@ In Player Mode, you select your character (Monkey 🐒 or Rabbit 🐇) before th
 Movement: Use W, A, S, D keys to move the player through the maze paths.
 Once the player hits the wall, a heart is removed from his Health bar.
 </td></tr><tr>
-<tr><td bgcolor="#4e87b4">
+<tr>
 
 ____**Instructions**
 
@@ -43,14 +43,14 @@ Compilation/Interpretation:<br>
 Run make at the root of the repository.
 
 Installation:<br>
-run this in terminal : ```pip install pygame```
+run this in terminal : ```make install```
 
 Execution:<br>
 ```make run```
 or simply ```make```.
 
 </td></tr><tr>
-<tr><td bgcolor="#2690db">
+<tr>
 
 
 ____**Resources**
@@ -75,9 +75,9 @@ AI was utilized as a collaborative tool throughout this project for the followin
 Documentation: <br>Assistance in structuring this README to meet the specific requirements of the 42 curriculum.
 
 
-<tr bgcolor="#1877bbb2"><td>
 
-In accordance with the project management requirements the subject, our team utilized a collaborative approach where responsibilities were divided based on technical specializations to ensure a cohesive workflow. Momahdam spearheaded the core generation engine by implementing the Randomized DFS algorithm and creating the fluid maze animations and rendering systems; additionally, they managed the input parsing logic, final branch merging, and the structural integrity of the project's documentation, and cells pattern.<br>Simultaneously, Ziad focused on the game logic and the Player Mode enhancements, integrating the ASCII visuals, bonus mechanics, and the BFS solver for automated pathfinding. He also handled the technical translation of the maze into hexadecimal output files, while maintaining the build system through a robust Makefile.
+
+In accordance with the project management requirements the subject, our team utilized a collaborative approach where responsibilities were divided based on technical specializations to ensure a cohesive workflow. Momahdam spearheaded the core generation engine by implementing the Randomized DFS algorithm and creating the fluid maze animations and rendering systems; additionally, they managed the input parsing logic, final branch merging, and the structural integrity of the project's documentation, and cells pattern.<br>Simultaneously, Zdaouari focused on the game logic and the Player Mode enhancements, integrating the ASCII visuals, bonus mechanics, and the BFS solver for automated pathfinding. He also handled the technical translation of the maze into hexadecimal output files, while maintaining the build system through a robust Makefile.
 
 Initially, our planning followed a linear trajectory, but we evolved into an agile cycle to better handle the complexities of the hexadecimal transformations and rendering synchronization. What worked particularly well was our modular code structure, which allowed the generation and solving algorithms to be tested independently of the UI. While our communication was consistent, we identified that earlier integration of the curses and pygame components could have streamlined the final debugging phase. To maintain our workflow, we relied on Git for version control<br>
 
@@ -89,7 +89,7 @@ Initially, our planning followed a linear trajectory, but we evolved into an agi
 
 **Project Management**
 :Team Roles
-Momahdam managed the DFS algorithm, rendering animations, parsing logic, and documentation. Ziad handled the game logic, BFS pathfinding, ASCII/Hex transformations, and the build system via the Makefile.
+Momahdam managed the DFS algorithm, rendering animations, parsing logic, and documentation. zdaouari handled the game logic, BFS pathfinding, ASCII/Hex transformations, and the build system via the Makefile.
 
 **Planning Evolution**
 :Our initial plan was a linear "Logic-first" approach, but it evolved into an agile cycle to handle hexadecimal conversion hurdles. This shift allowed us to refine the player mechanics while simultaneously perfecting the generation engine.

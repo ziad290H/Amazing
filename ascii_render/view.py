@@ -1,9 +1,22 @@
 import curses
+from typing import Any, Set, Tuple
 
 
 class MazeView:
+    """Provides static methods for rendering game components to the terminal.
+
+    This class handles the visual layout of the Heads-Up Display (HUD),
+    the ASCII maze grid, and the interactive control legend.
+    """
+
     @staticmethod
-    def draw_hud(stdscr, engine):
+    def draw_hud(stdscr: Any, engine: Any) -> None:
+        """Renders the top status bar containing score and health.
+
+        Args:
+            stdscr: The main curses window object.
+            engine (GameEngine): The engine instance containing data.
+        """
         try:
             stdscr.addstr(0, 2, " JUNGLE_PROTOCOL_v2.0 ", curses.A_REVERSE)
             hearts = '❤️ ' * engine.health
@@ -13,7 +26,20 @@ class MazeView:
             pass
 
     @staticmethod
-    def draw_maze(stdscr, engine, path_set, player_char):
+    def draw_maze(
+        stdscr: Any,
+        engine: Any,
+        path_set: Set[Tuple[int, int]],
+        player_char: str
+    ) -> None:
+        """Renders the maze grid, walls, player, exit, and solution path.
+
+        Args:
+            stdscr: The main curses window object.
+            engine (GameEngine): The engine containing grid and player data.
+            path_set (Set[Tuple[int, int]]): Solution path coordinates.
+            player_char (str): Character representing the player.
+        """
         offset_y = 2
         h, w = engine.maze.height, engine.maze.width
         for y in range(h):
@@ -54,7 +80,15 @@ class MazeView:
         stdscr.addstr(h * 2 + offset_y, w * 4, "+")
 
     @staticmethod
-    def draw_controls(stdscr, engine, sh, sw):
+    def draw_controls(stdscr: Any, engine: Any, sh: int, sw: int) -> None:
+        """Displays the interactive control legend at the screen bottom.
+
+        Args:
+            stdscr: The main curses window object.
+            engine (GameEngine): The engine instance.
+            sh (int): Total height of the terminal screen.
+            sw (int): Total width of the terminal screen.
+        """
         inst_row = (engine.maze.height * 2) + 3
         if inst_row >= sh:
             return
@@ -70,7 +104,7 @@ class MazeView:
                 stdscr.addstr(inst_row, curr_x, key,
                               curses.A_BOLD | curses.A_REVERSE)
                 stdscr.addstr(inst_row, curr_x + len(key),
-                              f" {label}  ", curses.A_REVERSE)
+                              f" {label}   ", curses.A_REVERSE)
                 curr_x += len(key) + len(label) + 4
         except curses.error:
             pass

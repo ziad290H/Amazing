@@ -1,21 +1,59 @@
 import curses
 import pygame
 import os
+from typing import Any, List, Optional, Tuple
 from .engine import GameEngine
 from .view import MazeView
 
 
 class AsciiRenderer:
-    def __init__(self, maze, entry, exit_pos, char="🐒", config=None):
-        playlist = [
+    """Handles the visual representation of the maze using the Curses library.
+
+    Attributes:
+        engine (GameEngine): The logic controller for player movement and state.
+        player_char (str): The emoji or character representing the player.
+        config (Optional[dict]): Configuration data for the game.
+    """
+
+    def __init__(
+        self,
+        maze: Any,
+        entry: Tuple[int, int],
+        exit_pos: Tuple[int, int],
+        char: str = "🐒",
+        config: Optional[dict] = None
+    ) -> None:
+        """Initializes the AsciiRenderer with game logic and visual settings.
+
+        Args:
+            maze (MazeGenerator): The generated maze object to be displayed.
+            entry (tuple): The (x, y) starting coordinates for the player.
+            exit_pos (tuple): The (x, y) coordinates of the goal.
+            char (str, optional): Character representing the player.
+                Defaults to "🐒".
+            config (dict, optional): Data from the configuration file.
+                Defaults to None.
+        """
+        playlist: List[str] = [
             "saha.mp3", "Dance_it_out.mp3", "joy_to_the_world.mp3",
             "game_over.mp3", "summer_joy.mp3"
         ]
-        self.engine = GameEngine(maze, entry, exit_pos, playlist)
-        self.player_char = char
-        self.config = config
+        self.engine: GameEngine = GameEngine(maze, entry, exit_pos, playlist)
+        self.player_char: str = char
+        self.config: Optional[dict] = config
 
-    def render(self, stdscr, path=None):
+    def render(
+        self,
+        stdscr: Any,
+        path: Optional[List[Tuple[int, int]]] = None
+    ) -> None:
+        """Draws the current state of the game, HUD, and music status.
+
+        Args:
+            stdscr: The main curses window object used for drawing.
+            path (list, optional): A list of (x, y) tuples to highlight
+                as the solution path. Defaults to None.
+        """
         stdscr.clear()
         sh, sw = stdscr.getmaxyx()
         path_set = set(path) if path else set()
@@ -35,15 +73,26 @@ class AsciiRenderer:
                 pass
         stdscr.refresh()
 
-    def animate_path(self, stdscr, path):
-        """Renders the solution one step at a time."""
+    def animate_path(self, stdscr: Any, path: List[Tuple[int, int]]) -> None:
+        """Visually animates the solution path step-by-step.
+
+        Args:
+            stdscr: The main curses window object.
+            path (list): The ordered list of coordinates to animate.
+        """
         if not path:
             return
         for i in range(1, len(path) + 1):
             self.render(stdscr, path[:i])
-            curses.napms(50)  # 50ms delay per banana
+            curses.napms(50)  # 50ms delay per step
 
-    def run(self, stdscr):
+    def run(self, stdscr: Any) -> None:
+        """Starts the main game loop and handles key inputs.
+
+        Args:
+            stdscr: The main curses window object.
+        """
+        # --- INITIALIZATION ---
         try:
             if not pygame.mixer.get_init():
                 pygame.mixer.init()
@@ -66,17 +115,24 @@ class AsciiRenderer:
             curses.curs_set(0)
         except curses.error:
             pass
-
+        
+        # State variable for toggling solution visibility
         show_sol = False
 
+        # --- MAIN GAME LOOP ---
         while True:
-            cur_pos = tuple(self.engine.player_pos)
+            # 1. Update logic: Always get a fresh path from current position to exit
+            cur_pos = (self.engine.player_pos[1], self.engine.player_pos[0])
+            # Note: Ensure your solver expects (x, y) or [y, x] consistently
             path = self.engine.maze.solve(cur_pos, self.engine.exit)
+            
+            # 2. Render current frame
             self.render(stdscr, path if show_sol else None)
 
+            # 3. Input Handling
             key = stdscr.getch()
 
-            if key in (ord('q'), ord('Q'), 27):
+            if key in (ord('q'), ord('Q'), 27):  # Quit
                 break
 
             # Music Toggle & Track Switch
@@ -86,19 +142,24 @@ class AsciiRenderer:
                 else:
                     pygame.mixer.music.play(-1)
                 self.engine.music_playing = not self.engine.music_playing
-            elif key == curses.KEY_RIGHT:
+            
+            elif key == curses.KEY_RIGHT and not self.engine.play_mode:
+                # Only switch music via Right Arrow if not in movement mode
                 self.engine.switch_music()
 
             # Mode Controls
             elif key in (ord('p'), ord('P')):
                 self.engine.play_mode = not self.engine.play_mode
+            
             elif key in (ord('s'), ord('S')):
                 show_sol = not show_sol
-                if show_sol:
+                if show_sol and path:
+                    # Trigger the animation sequence if showing the path
                     self.animate_path(stdscr, path)
+            
             elif key in (ord('r'), ord('R')):
                 self.engine.regenerate()
-                show_sol = False
+                show_sol = False  # Reset solution view on new maze
 
             # Movement (Play Mode Only)
             if self.engine.play_mode and key in (
@@ -113,3 +174,4 @@ class AsciiRenderer:
                         self.engine.health = 3
                 elif res == "WIN":
                     self.engine.regenerate()
+                    show_sol = False

@@ -1,16 +1,32 @@
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict, Generator
 import random
 
+
 class MazeGenerator:
-    DIRECTIONS = {
-        "N": (0, -1, 1), # dx, dy, bit
+    """Handles randomized maze generation and pathfinding logic.
+
+    Uses a Recursive Backtracker algorithm for generation and a Breadth-First
+    Search (BFS) for solving. Supports custom seeds and '42' logo embedding.
+
+    Attributes:
+        DIRECTIONS (Dict): Mapping of cardinal directions to (dx, dy, bitmask).
+        OPPOSITE (Dict): Mapping of wall bits to their inverse counterparts.
+        width (int): Horizontal dimension of the maze.
+        height (int): Vertical dimension of the maze.
+        grid (List[List[int]]): 2D array storing bitmask wall data.
+        visited (List[List[bool]]): Tracking for generation and logo blocks.
+    """
+
+    DIRECTIONS: Dict[str, Tuple[int, int, int]] = {
+        "N": (0, -1, 1),
         "E": (1, 0, 2),
         "S": (0, 1, 4),
         "W": (-1, 0, 8)
     }
-    OPPOSITE = {1: 4, 2: 8, 4: 1, 8: 2}
+    OPPOSITE: Dict[int, int] = {1: 4, 2: 8, 4: 1, 8: 2}
 
     def __init__(self, width: int, height: int, seed: Optional[int] = None):
+        """Initializes the maze grid and applies optional randomization seed."""
         self.width = width
         self.height = height
         if seed is not None:
@@ -19,19 +35,28 @@ class MazeGenerator:
         self.visited = [[False for _ in range(width)] for _ in range(height)]
 
     def in_bounds(self, x: int, y: int) -> bool:
+        """Checks if the given coordinates are within the grid boundaries."""
         return 0 <= x < self.width and 0 <= y < self.height
 
-    def enforce_borders(self):
+    def enforce_borders(self) -> None:
+        """Sets bitmask walls for the outer perimeter of the maze."""
         for y in range(self.height):
             for x in range(self.width):
-                if y == 0: self.grid[y][x] |= 1
-                if x == self.width - 1: self.grid[y][x] |= 2
-                if y == self.height - 1: self.grid[y][x] |= 4
-                if x == 0: self.grid[y][x] |= 8
+                if y == 0:
+                    self.grid[y][x] |= 1
+                if x == self.width - 1:
+                    self.grid[y][x] |= 2
+                if y == self.height - 1:
+                    self.grid[y][x] |= 4
+                if x == 0:
+                    self.grid[y][x] |= 8
 
     def apply_42_logo(self) -> None:
-        # 5x7 pattern where 1 = fully closed cell (Hex F)
-        # This represents a clear '4' and '2'
+        """Embeds a static '42' pattern into the center of the maze.
+
+        Cells belonging to the pattern are blocked and marked as visited
+        to prevent the generator from carving through them.
+        """
         pattern = [
             [1, 0, 1, 0, 1, 1, 1],
             [1, 0, 1, 0, 0, 0, 1],
@@ -40,15 +65,12 @@ class MazeGenerator:
             [0, 0, 1, 0, 1, 1, 1]
         ]
 
-        p_h = len(pattern)
-        p_w = len(pattern[0])
+        p_h, p_w = len(pattern), len(pattern[0])
 
-        # Validation: Check if maze can fit the logo + 1 cell border [cite: 144]
         if self.width < p_w + 2 or self.height < p_h + 2:
-            print("Error: Maze size too small to contain the '42' pattern.") [cite: 145]
+            print("Error: Maze size too small to contain the '42' pattern.")
             return
 
-        # Calculate centering offsets
         start_x = (self.width - p_w) // 2
         start_y = (self.height - p_h) // 2
 
@@ -56,12 +78,11 @@ class MazeGenerator:
             for x in range(p_w):
                 if pattern[y][x] == 1:
                     target_x, target_y = start_x + x, start_y + y
-                    # Set all bits to 1 (Value 15 / Hex F) [cite: 148]
-                    self.grid[target_y][target_x] = 15 
-                    # Mark as visited so generator ignores these cells
+                    self.grid[target_y][target_x] = 15
                     self.visited[target_y][target_x] = True
 
     def get_neighbors(self, x: int, y: int) -> List[Tuple[int, int, int]]:
+        """Retrieves unvisited adjacent cells for the generation algorithm."""
         valid = []
         for dx, dy, bit in self.DIRECTIONS.values():
             nx, ny = x + dx, y + dy
@@ -69,7 +90,16 @@ class MazeGenerator:
                 valid.append((nx, ny, bit))
         return valid
 
-    def generate(self, start_x: int, start_y: int) -> None:
+    def generate(
+        self,
+        start_x: int,
+        start_y: int
+    ) -> Generator[List[Tuple[int, int]], None, None]:
+        """Carves paths using a Recursive Backtracker (DFS).
+
+        Yields:
+            List[Tuple[int, int]]: The current stack for animation purposes.
+        """
         stack = [(start_x, start_y)]
         self.visited[start_y][start_x] = True
 
@@ -79,18 +109,24 @@ class MazeGenerator:
 
             if neighbors:
                 nx, ny, bit = random.choice(neighbors)
-                # Remove walls
                 self.grid[cy][cx] &= ~bit
                 self.grid[ny][nx] &= ~self.OPPOSITE[bit]
-               
                 self.visited[ny][nx] = True
                 stack.append((nx, ny))
             else:
                 stack.pop()
-            yield (stack)
+            yield stack
 
-    #THIS IS THE BFS!!!!
-    def solve(self, start: Tuple[int, int], end: Tuple[int, int]) -> List[Tuple[int, int]]:
+    def solve(
+        self,
+        start: Tuple[int, int],
+        end: Tuple[int, int]
+    ) -> List[Tuple[int, int]]:
+        """Finds the shortest path between two points using BFS.
+
+        Returns:
+            List[Tuple[int, int]]: The sequence of coordinates for the path.
+        """
         queue = [start]
         parent = {start: None}
 
@@ -102,19 +138,22 @@ class MazeGenerator:
             cx, cy = curr
             val = self.grid[cy][cx]
 
-            # Directions: N=1, E=2, S=4, W=8
+            # Movement logic based on bitmask (N=1, E=2, S=4, W=8)
             moves = []
-            if not (val & 1): moves.append((cx, cy - 1))
-            if not (val & 2): moves.append((cx + 1, cy))
-            if not (val & 4): moves.append((cx, cy + 1))
-            if not (val & 8): moves.append((cx - 1, cy))
+            if not (val & 1):
+                moves.append((cx, cy - 1))
+            if not (val & 2):
+                moves.append((cx + 1, cy))
+            if not (val & 4):
+                moves.append((cx, cy + 1))
+            if not (val & 8):
+                moves.append((cx - 1, cy))
 
             for next_node in moves:
                 if next_node not in parent:
                     parent[next_node] = curr
                     queue.append(next_node)
 
-        # Reconstruct path
         path = []
         step = end
         while step:

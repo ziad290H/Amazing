@@ -1,8 +1,14 @@
 import time
 import curses
+from typing import List
 
 
-def get_instructions():
+def get_instructions() -> List[str]:
+    """Returns the mission briefing and control instructions for the game.
+
+    Returns:
+        List[str]: A list of strings, each representing a line of instructions.
+    """
     return [
         "--- JUNGLE PROTOCOL: MISSION BRIEFING ---",
         "",
@@ -27,20 +33,33 @@ def get_instructions():
         "--- PRESS [Y] AGAIN TO RETURN TO THE JUNGLE ---"
     ]
 
-def play_intro(stdscr):
+
+def play_intro(stdscr: curses.window) -> str:
+    """Executes the game's introductory sequence and character selection.
+
+    This includes a typewriter effect for titles, a loading animation,
+    an optional instruction screen, and a visual character picker.
+
+    Args:
+        stdscr (curses.window): The main curses window object.
+
+    Returns:
+        str: The emoji representing the chosen character ("🐒" or "🐇").
+    """
     curses.curs_set(0)
     stdscr.clear()
     sh, sw = stdscr.getmaxyx()
-    
+
     title = "PROJECT AMAZING"
     subtitle = "Initializing Jungle Protocol...🐒"
     authors = "made by Zdaouari && momahdam"
     loading_chars = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
-    
+
     # 1. Authors Typewriter
     for i in range(len(authors) + 1):
         stdscr.erase()
-        stdscr.addstr(sh//3, (sw - len(authors))//2, authors[:i], curses.A_BOLD)
+        stdscr.addstr(sh // 3, (sw - len(authors)) // 2, authors[:i],
+                      curses.A_BOLD)
         stdscr.refresh()
         time.sleep(0.05)
     time.sleep(0.5)
@@ -48,67 +67,62 @@ def play_intro(stdscr):
     # 2. Title & Subtitle Typewriter
     for i in range(len(subtitle) + 1):
         stdscr.erase()
-        stdscr.addstr(sh//2 - 1, (sw - len(title))//2, title, curses.A_BOLD)
-        stdscr.addstr(sh//2 + 1, (sw - len(subtitle))//2, subtitle[:i])
+        stdscr.addstr(sh // 2 - 1, (sw - len(title)) // 2, title, curses.A_BOLD)
+        stdscr.addstr(sh // 2 + 1, (sw - len(subtitle)) // 2, subtitle[:i])
         stdscr.refresh()
         time.sleep(0.05)
 
     # 3. Spinning Loader
     for i in range(20):
         char = loading_chars[i % len(loading_chars)]
-        stdscr.addstr(sh//2 + 3, sw//2, char)
+        stdscr.addstr(sh // 2 + 3, sw // 2, char)
         stdscr.refresh()
         time.sleep(0.1)
 
     # 4. Explanation Prompt
     stdscr.erase()
     ask_expl = "Do you want an explanation for the game? (Y/N)"
-    stdscr.addstr(sh//2, (sw - len(ask_expl))//2, ask_expl, curses.A_BOLD)
+    stdscr.addstr(sh // 2, (sw - len(ask_expl)) // 2, ask_expl, curses.A_BOLD)
     stdscr.refresh()
-    
-    while True: 
+
+    while True:
         key = stdscr.getch()
-        
-        # Scenario: User wants the explanation
         if key in [ord('Y'), ord('y')]:
             stdscr.erase()
             explanation = get_instructions()
             for idx, line in enumerate(explanation):
-                stdscr.addstr(sh//2 - 4 + idx, (sw - len(line))//2, line)
-            
+                stdscr.addstr(sh // 2 - 4 + idx, (sw - len(line)) // 2, line)
             stdscr.refresh()
-            stdscr.getch() # This second getch waits for them to finish reading
-            break          # Exits the 'while True' to move to Character Selection
-            
-        # Scenario: User skips explanation
+            stdscr.getch()
+            break
         elif key in [ord('N'), ord('n')]:
             break
 
     # 5. Character Selection
-    # Using the 3x3 grids we discussed
     char1_icon = [["🌿", "🌿", "🌿"], ["🌿", "🐒", "🌿"], ["🌿", "🌿", "🌿"]]
     char2_icon = [["🌸", "🥕", "🌸"], ["🥕", "🐇", "🥕"], ["🌸", "🥕", "🌸"]]
-    
-    chosen_char = "🐒" # Default
-    
+
+    chosen_char = "🐒"
+
     while True:
         stdscr.erase()
         prompt = "CHOOSE YOUR CHARACTER"
-        stdscr.addstr(sh//4, (sw - len(prompt))//2, prompt, curses.A_UNDERLINE)
-        
+        stdscr.addstr(sh // 4, (sw - len(prompt)) // 2, prompt,
+                      curses.A_UNDERLINE)
+
         # Draw Option 1 (Monkey)
-        stdscr.addstr(sh//2 - 2, sw//3 - 5, "1. MONKEY")
+        stdscr.addstr(sh // 2 - 2, sw // 3 - 5, "1. MONKEY")
         for idx, row in enumerate(char1_icon):
-            stdscr.addstr(sh//2 + idx, sw//3 - 5, "".join(row))
-            
+            stdscr.addstr(sh // 2 + idx, sw // 3 - 5, "".join(row))
+
         # Draw Option 2 (Rabbit)
-        stdscr.addstr(sh//2 - 2, (2*sw//3) - 5, "2. RABBIT")
+        stdscr.addstr(sh // 2 - 2, (2 * sw // 3) - 5, "2. RABBIT")
         for idx, row in enumerate(char2_icon):
-            stdscr.addstr(sh//2 + idx, (2*sw//3) - 5, "".join(row))
-            
-        stdscr.addstr(sh - 2, (sw - 25)//2, "Press '1' or '2' to start")
+            stdscr.addstr(sh // 2 + idx, (2 * sw // 3) - 5, "".join(row))
+
+        stdscr.addstr(sh - 2, (sw - 25) // 2, "Press '1' or '2' to start")
         stdscr.refresh()
-        
+
         key = stdscr.getch()
         if key == ord('1'):
             chosen_char = "🐒"
@@ -120,8 +134,8 @@ def play_intro(stdscr):
     # Transition Message
     stdscr.erase()
     final_msg = f"Starting adventure with {chosen_char}!"
-    stdscr.addstr(sh//2, (sw - len(final_msg))//2, final_msg, curses.A_BOLD)
+    stdscr.addstr(sh // 2, (sw - len(final_msg)) // 2, final_msg, curses.A_BOLD)
     stdscr.refresh()
     time.sleep(2)
-    
+
     return chosen_char

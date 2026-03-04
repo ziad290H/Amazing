@@ -1,19 +1,30 @@
+from typing import Dict
+
+
 class Cell:
+    """Represents a single square in the maze grid.
+
+    This class tracks the state of the four surrounding walls, whether
+    the cell has been processed by the generation algorithm, and if it
+    is part of a static structural block.
+
+    Attributes:
+        flag (bool): A class-level indicator for general state tracking.
+        walls (Dict[str, bool]): A mapping of directions ('N', 'E', 'S', 'W')
+            to their respective wall states (True for exists, False for carved).
+        visited (bool): True if the cell has been visited during generation.
+        blocked (bool): True if the cell is part of the '42' logo block.
     """
-        Represents a single square in the maze grid.
-        hase attributes:
-            walls: dictionary of the 4 walls state
-            visited = if the cell was visited or not
-            blocked if the cell is owned by 42 block
-    """
-    flag = True
+
+    flag: bool = True
 
     def __init__(self) -> None:
-        self.walls = {
+        """Initializes a new maze cell with all walls intact and unvisited."""
+        self.walls: Dict[str, bool] = {
             "N": True,
             "E": True,
             "S": True,
             "W": True
         }
-        self.visited = False
-        self.blocked = False
+        self.visited: bool = False
+        self.blocked: bool = False

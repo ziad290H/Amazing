@@ -1,22 +1,60 @@
 import os
 import pygame
 import curses
+from typing import List, Tuple, Union, Any
 
 
 class GameEngine:
-    def __init__(self, maze, entry, exit_pos, playlist):
+    """Manages the internal game state, player movement, and audio logic.
+
+    This class serves as the bridge between the raw maze data and the
+    user interface, tracking player health, position, and music state.
+
+    Attributes:
+        maze (MazeGenerator): The current maze instance being played.
+        entry (tuple): The (x, y) coordinates where the player starts.
+        exit (tuple): The (x, y) coordinates of the finish line.
+        player_pos (list): Current [x, y] coordinates of the player.
+        score (int): The current player score.
+        health (int): Remaining lives before a forced regeneration.
+        play_mode (bool): Toggle for manual movement mode.
+        music_playing (bool): Current toggle state of the background audio.
+        playlist (list): List of filenames for the music tracks.
+        music_index (int): Index of the currently active music track.
+    """
+
+    def __init__(
+        self,
+        maze: Any,
+        entry: Tuple[int, int],
+        exit_pos: Tuple[int, int],
+        playlist: List[str]
+    ) -> None:
+        """Initializes the GameEngine with maze data and player state.
+
+        Args:
+            maze (MazeGenerator): The maze object containing the grid logic.
+            entry (tuple): The starting (x, y) position for the player.
+            exit_pos (tuple): The target (x, y) position for victory.
+            playlist (list): A list of strings representing audio filenames.
+        """
         self.maze = maze
         self.entry = entry
         self.exit = exit_pos
-        self.player_pos = list(entry)
-        self.score = 0
-        self.health = 3
-        self.play_mode = False
-        self.music_playing = False
-        self.music_index = 0
-        self.playlist = playlist
+        self.player_pos: List[int] = list(entry)
+        self.score: int = 0
+        self.health: int = 3
+        self.play_mode: bool = False
+        self.music_playing: bool = False
+        self.music_index: int = 0
+        self.playlist: List[str] = playlist
 
-    def switch_music(self):
+    def switch_music(self) -> None:
+        """Cycles to the next track in the playlist and updates the audio mixer.
+
+        Increments the music_index and attempts to load and play the new track.
+        If music_playing is True, the new track starts immediately.
+        """
         try:
             self.music_index = (self.music_index + 1) % len(self.playlist)
             track = self.playlist[self.music_index]
@@ -27,7 +65,20 @@ class GameEngine:
         except Exception:
             pass
 
-    def handle_move(self, direction):
+    def handle_move(self, direction: int) -> Union[str, bool]:
+        """Processes player movement based on input and maze wall logic.
+
+        Checks the bitmask of the current cell to see if a wall exists in the
+        requested direction and ensures the target cell is not a 'blocked'
+        logo cell.
+
+        Args:
+            direction (int): The curses key code for the movement direction.
+
+        Returns:
+            Union[str, bool]: "WIN" if player reaches exit, "MOVED" if success,
+                "COLLISION" if blocked. Returns False if direction is invalid.
+        """
         x, y = self.player_pos
         val = self.maze.grid[y][x]
         move_map = {
@@ -59,7 +110,12 @@ class GameEngine:
             return "MOVED"
         return "COLLISION"
 
-    def regenerate(self):
+    def regenerate(self) -> None:
+        """Resets the game state with a new randomly generated maze.
+
+        Instantiates a new MazeGenerator, re-applies the '42' logo,
+        fully carves the paths, and resets the player to the entry point.
+        """
         from mazegenerator import MazeGenerator
         self.maze = MazeGenerator(self.maze.width, self.maze.height)
         self.maze.apply_42_logo()
