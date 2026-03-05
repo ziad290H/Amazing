@@ -156,8 +156,7 @@ class AsciiRenderer:
                     pygame.mixer.music.play(-1)
                 self.engine.music_playing = not self.engine.music_playing
 
-            elif key == curses.KEY_RIGHT and not self.engine.play_mode:
-                # Only switch music via Right Arrow if not in movement mode
+            if key in (ord('n'), ord('N')):
                 self.engine.switch_music()
 
             # Mode Controls

@@ -111,7 +111,7 @@ class MazeView:
         try:
             stdscr.addstr(inst_row, 0, " " * sw, curses.A_REVERSE)
             btns = [
-                (" M ", "ON/OFF"), (" → ", "NEXT"),
+                (" M ", "ON/OFF"), (" N ", "NEXT"),
                 (" P ", "PLAY"), (" S ", "SOLVE"), (" Q ", "QUIT"),
                 (" R ", "REGENERATE MAZE"), (" C ", "CHANGE COLOR")
             ]
