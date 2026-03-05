@@ -58,7 +58,8 @@ def main(stdscr: Any, config: Dict[str, Any]) -> None:
             f.write(encoder.encode())
     except PermissionError:
         raise PermissionError(
-            f"You Dont have the Permissions of the file {config['OUTPUT_FILE']}"
+            "You Dont have the Permissions of",
+            f"the file {config['OUTPUT_FILE']}"
         )
 
     # Start the interactive game loop

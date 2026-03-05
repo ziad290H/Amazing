@@ -1,4 +1,3 @@
-import curses
 from typing import Any, List, Tuple
 
 
@@ -44,7 +43,8 @@ class GameEngine:
         4: East, 8: West) to determine if a move is valid.
 
         Args:
-            direction (str): The requested movement ('UP', 'DOWN', 'LEFT', 'RIGHT').
+            direction (str): The requested movement
+            ('UP', 'DOWN', 'LEFT', 'RIGHT').
         """
         y, x = self.player_pos
         cell_val = self.maze.grid[y][x]
@@ -82,7 +82,8 @@ class GameEngine:
             self.game_over = True
 
     def win_round(self) -> None:
-        """Updates score and health upon reaching the exit and triggers a reset."""
+        """Updates score and health upon reaching
+                the exit and triggers a reset."""
         self.score += 1
         if self.health < 3:
             self.health += 1  # Restore heart on win

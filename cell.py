@@ -11,7 +11,8 @@ class Cell:
     Attributes:
         flag (bool): A class-level indicator for general state tracking.
         walls (Dict[str, bool]): A mapping of directions ('N', 'E', 'S', 'W')
-            to their respective wall states (True for exists, False for carved).
+            to their respective wall states
+            (True for exists, False for carved).
         visited (bool): True if the cell has been visited during generation.
         blocked (bool): True if the cell is part of the '42' logo block.
     """

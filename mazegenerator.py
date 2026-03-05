@@ -26,7 +26,8 @@ class MazeGenerator:
     OPPOSITE: Dict[int, int] = {1: 4, 2: 8, 4: 1, 8: 2}
 
     def __init__(self, width: int, height: int, seed: Optional[int] = None):
-        """Initializes the maze grid and applies optional randomization seed."""
+        """Initializes the maze grid and applies
+                    optional randomization seed."""
         self.width = width
         self.height = height
         if seed is not None:
@@ -95,7 +96,7 @@ class MazeGenerator:
             neighbors = self.get_neighbors(cx, cy)
 
             if neighbors:
-                #unpacking
+                # unpacking
                 nx, ny, bit = random.choice(neighbors)
                 self.grid[cy][cx] &= ~bit
                 self.grid[ny][nx] &= ~self.OPPOSITE[bit]
@@ -105,26 +106,32 @@ class MazeGenerator:
                 stack.pop()
             yield stack
 
-    def solve(self, start: Tuple[int, int], end: Tuple[int, int]) -> List[Tuple[int, int]]:
+    def solve(self,
+              start: Tuple[int, int],
+              end: Tuple[int, int]
+              ) -> List[Tuple[int, int]]:
         # Standard BFS__ Breadth-First Search (BFS)
-        """Finds the shortest path between two points using Breadth-First Search (BFS).
+        """Finds the shortest path between two points
+                 using Breadth-First Search (BFS).
 
-        This method navigates the maze by checking bitwise wall values. It 
-        ensures the path only moves through carved-out passages and avoids 
+        This method navigates the maze by checking bitwise wall values. It
+        ensures the path only moves through carved-out passages and avoids
         visiting the same coordinate twice.
 
         Args:
-            start (Tuple[int, int]): The (x, y) coordinates of the starting point.
-            end (Tuple[int, int]): The (x, y) coordinates of the destination.
+            start (Tuple[int, int]): The (x, y) coordinates
+             of the starting point.
+            end (Tuple[int, int]): The (x, y) coordinates
+             of the destination.
 
         Returns:
-            List[Tuple[int, int]]: A list of (x, y) coordinates representing the 
-                shortest path from start to end. Returns an empty list if 
-                no path exists.
+            List[Tuple[int, int]]: A list of (x, y) coordinates
+            representing the shortest path from start to end.
+            Returns an empty list if no path exists.
         """
         queue = [start]
         parent = {start: None}
-    
+
         while queue:
             curr = queue.pop(0)
             if curr == end:
@@ -139,14 +146,13 @@ class MazeGenerator:
             val = self.grid[cy][cx]
 
             # N=1, E=2, S=4, W=8
-            # We only move if the BIT is NOT set (meaning the wall is carved out)
-            directions = [((cx, cy - 1), 1), ((cx + 1, cy), 2), 
+            directions = [((cx, cy - 1), 1), ((cx + 1, cy), 2),
                           ((cx, cy + 1), 4), ((cx - 1, cy), 8)]
-    
+
             for (nx, ny), bit in directions:
                 if self.in_bounds(nx, ny) and (nx, ny) not in parent:
-                    if not (val & bit): # If there is NO wall in this direction
+                    if not (val & bit):  # If NO wall in this direction
                         parent[(nx, ny)] = curr
                         queue.append((nx, ny))
-        
-        return [] # No path found
+
+        return []  # No path found

@@ -31,7 +31,7 @@ class MazeView:
         engine: Any,
         path_set: Set[Tuple[int, int]],
         player_char: str,
-        them:bool = 1
+        them: bool = 1
     ) -> None:
         """Renders the maze grid, walls, player, exit, and solution path.
 
@@ -63,10 +63,10 @@ class MazeView:
                                       logo_attr)
                     if val & 1:
                         stdscr.addstr(py, px + 1, "---",
-                                        wall_attr)
+                                      wall_attr)
                     if val & 8:
                         stdscr.addstr(py + 1, px, "|",
-                                        wall_attr)
+                                      wall_attr)
 
                     curr = (x, y)
                     if curr == tuple(engine.player_pos):
@@ -85,15 +85,15 @@ class MazeView:
                 except curses.error:
                     pass
             stdscr.addstr(y * 2 + offset_y, w * 4, "+",
-                                    wall_attr)
+                          wall_attr)
             stdscr.addstr(y * 2 + 1 + offset_y, w * 4, "|",
-                                    wall_attr)
+                          wall_attr)
 
         for x in range(w):
             stdscr.addstr(h * 2 + offset_y, x * 4, "+---",
-                                wall_attr)
+                          wall_attr)
         stdscr.addstr(h * 2 + offset_y, w * 4, "+",
-                                wall_attr)
+                      wall_attr)
 
     @staticmethod
     def draw_controls(stdscr: Any, engine: Any, sh: int, sw: int) -> None:

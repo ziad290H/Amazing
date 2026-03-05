@@ -10,8 +10,9 @@ class AsciiRenderer:
     """Handles the visual representation of the maze using the Curses library.
 
     Attributes:
-        engine (GameEngine): The logic controller for player movement and state.
-        player_char (str): The emoji or character representing the player.
+         engine (GameEngine): The logic controller
+        for player movement and state.
+         player_char (str): The emoji or character representing the player.
         config (Optional[dict]): Configuration data for the game.
     """
 
@@ -46,7 +47,7 @@ class AsciiRenderer:
         self,
         stdscr: Any,
         path: Optional[List[Tuple[int, int]]] = None,
-        them: int =1
+        them: int = 1
     ) -> None:
         """Draws the current state of the game, HUD, and music status.
 
@@ -56,7 +57,7 @@ class AsciiRenderer:
                 as the solution path. Defaults to None.
         """
         try:
-        #   check and make the terminal ready to change colors
+            # check and make the terminal ready to change colors
             curses.start_color()
             curses.use_default_colors()
 
@@ -67,14 +68,14 @@ class AsciiRenderer:
             # Pair 3: Green Walls (New!)
             curses.init_pair(3, curses.COLOR_GREEN, -1)
         except curses.error:
-            pass      
+            pass
         stdscr.clear()
         sh, sw = stdscr.getmaxyx()
         path_set = set(path) if path else set()
 
         MazeView.draw_hud(stdscr, self.engine)
-        MazeView.draw_maze(stdscr, self.engine, path_set, self.player_char,
-                                                        them)
+        MazeView.draw_maze(stdscr, self.engine, path_set,
+                           self.player_char, them)
         MazeView.draw_controls(stdscr, self.engine, sh, sw)
 
         status_y = (self.engine.maze.height * 2) + 5
@@ -122,14 +123,15 @@ class AsciiRenderer:
             curses.curs_set(0)
         except curses.error:
             pass
-        
+
         # State variable for toggling solution visibility
         them_idx = 1
         show_sol = False
 
         # --- MAIN GAME LOOP ---
         while True:
-            # 1. Update logic: Always get a fresh path from current position to exit
+            # 1. Update logic: Always get a fresh path from current
+            # position to exit
             px, py = self.engine.player_pos
             ex, ey = self.engine.exit
             cur_pos = (int(px), int(py))
@@ -153,7 +155,7 @@ class AsciiRenderer:
                 else:
                     pygame.mixer.music.play(-1)
                 self.engine.music_playing = not self.engine.music_playing
-            
+
             elif key == curses.KEY_RIGHT and not self.engine.play_mode:
                 # Only switch music via Right Arrow if not in movement mode
                 self.engine.switch_music()
@@ -161,13 +163,13 @@ class AsciiRenderer:
             # Mode Controls
             elif key in (ord('p'), ord('P')):
                 self.engine.play_mode = not self.engine.play_mode
-            
+
             elif key in (ord('s'), ord('S')):
                 show_sol = not show_sol
                 if show_sol and path:
                     # Trigger the animation sequence if showing the path
                     self.animate_path(stdscr, path)
-            
+
             elif key in (ord('r'), ord('R')):
                 self.engine.regenerate()
                 show_sol = False  # Reset solution view on new maze

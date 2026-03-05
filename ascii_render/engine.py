@@ -50,7 +50,8 @@ class GameEngine:
         self.playlist: List[str] = playlist
 
     def switch_music(self) -> None:
-        """Cycles to the next track in the playlist and updates the audio mixer.
+        """Cycles to the next track in the playlist
+         and updates the audio mixer.
 
         Increments the music_index and attempts to load and play the new track.
         If music_playing is True, the new track starts immediately.
