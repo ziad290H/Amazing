@@ -35,14 +35,14 @@ def main(stdscr: Any, config: Dict[str, Any]) -> None:
         maze, config["ENTRY"], config["EXIT"], player_emoji, config
     )
 
-# Initialize the colors before animating
     maze.apply_42_logo()
+
     # Animate maze generation
+    # making the maze building wall by wall and make us see the progress
     for _ in maze.generate(config["ENTRY"][0], config["ENTRY"][1]):
         renderer.render(stdscr)
         stdscr.refresh()
         time.sleep(0.02)
-
 
     solution_path = maze.solve(config["ENTRY"], config["EXIT"])
     encoder = HexEncoder(

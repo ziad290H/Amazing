@@ -118,7 +118,22 @@ class MazeGenerator:
             yield stack
 
     def solve(self, start: Tuple[int, int], end: Tuple[int, int]) -> List[Tuple[int, int]]:
-        # Standard BFS
+        # Standard BFS__ Breadth-First Search (BFS)
+        """Finds the shortest path between two points using Breadth-First Search (BFS).
+
+        This method navigates the maze by checking bitwise wall values. It 
+        ensures the path only moves through carved-out passages and avoids 
+        visiting the same coordinate twice.
+
+        Args:
+            start (Tuple[int, int]): The (x, y) coordinates of the starting point.
+            end (Tuple[int, int]): The (x, y) coordinates of the destination.
+
+        Returns:
+            List[Tuple[int, int]]: A list of (x, y) coordinates representing the 
+                shortest path from start to end. Returns an empty list if 
+                no path exists.
+        """
         queue = [start]
         parent = {start: None}
     
@@ -131,10 +146,10 @@ class MazeGenerator:
                     path.append(curr)
                     curr = parent[curr]
                 return path[::-1]
-    
+
             cx, cy = curr
             val = self.grid[cy][cx]
-    
+
             # N=1, E=2, S=4, W=8
             # We only move if the BIT is NOT set (meaning the wall is carved out)
             directions = [((cx, cy - 1), 1), ((cx + 1, cy), 2), 

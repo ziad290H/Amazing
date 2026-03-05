@@ -56,6 +56,7 @@ class AsciiRenderer:
                 as the solution path. Defaults to None.
         """
         try:
+        #   check and make the terminal ready to change colors
             curses.start_color()
             curses.use_default_colors()
 

@@ -46,17 +46,22 @@ def play_intro(stdscr: curses.window) -> str:
     Returns:
         str: The emoji representing the chosen character ("🐒" or "🐇").
     """
+    #It represents your entire terminal window.
+    # make the curseur dont appear in screen
     curses.curs_set(0)
+    # wiped the teminal window completly and make it refresh
     stdscr.clear()
+    # get the height and width of the screen
     sh, sw = stdscr.getmaxyx()
 
     title = "PROJECT AMAZING"
     subtitle = "Initializing Jungle Protocol...🐒"
-    authors = "made by Zdaouari && momahdam"
+    authors = "made by z.daouari && mo.mahdam"
     loading_chars = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
 
     # 1. Authors Typewriter
     for i in range(len(authors) + 1):
+        # clear the terminale
         stdscr.erase()
         stdscr.addstr(sh // 3, (sw - len(authors)) // 2, authors[:i],
                       curses.A_BOLD)
@@ -66,8 +71,13 @@ def play_intro(stdscr: curses.window) -> str:
 
     # 2. Title & Subtitle Typewriter
     for i in range(len(subtitle) + 1):
+        # delet everything that is already in the screen
         stdscr.erase()
-        stdscr.addstr(sh // 2 - 1, (sw - len(title)) // 2, title, curses.A_BOLD)
+        stdscr.addstr(
+                    sh // 2 - 1,
+                    (sw - len(title)) // 2,
+                    title, curses.A_BOLD
+            )
         stdscr.addstr(sh // 2 + 1, (sw - len(subtitle)) // 2, subtitle[:i])
         stdscr.refresh()
         time.sleep(0.05)
@@ -76,6 +86,7 @@ def play_intro(stdscr: curses.window) -> str:
     for i in range(20):
         char = loading_chars[i % len(loading_chars)]
         stdscr.addstr(sh // 2 + 3, sw // 2, char)
+        #reveal the output
         stdscr.refresh()
         time.sleep(0.1)
 
@@ -83,9 +94,11 @@ def play_intro(stdscr: curses.window) -> str:
     stdscr.erase()
     ask_expl = "Do you want an explanation for the game? (Y/N)"
     stdscr.addstr(sh // 2, (sw - len(ask_expl)) // 2, ask_expl, curses.A_BOLD)
+    #reveal the output
     stdscr.refresh()
 
     while True:
+        #getch make the screen pose untile you press a key
         key = stdscr.getch()
         if key in [ord('Y'), ord('y')]:
             stdscr.erase()
@@ -134,7 +147,11 @@ def play_intro(stdscr: curses.window) -> str:
     # Transition Message
     stdscr.erase()
     final_msg = f"Starting adventure with {chosen_char}!"
-    stdscr.addstr(sh // 2, (sw - len(final_msg)) // 2, final_msg, curses.A_BOLD)
+    stdscr.addstr(
+        sh // 2,
+        (sw - len(final_msg)) // 2,
+        final_msg, curses.A_BOLD
+        )
     stdscr.refresh()
     time.sleep(2)
 
