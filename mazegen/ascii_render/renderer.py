@@ -1,7 +1,7 @@
 import curses
 import pygame
 import os
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple, Dict
 from .engine import GameEngine
 from .view import MazeView
 
@@ -22,7 +22,7 @@ class AsciiRenderer:
         entry: Tuple[int, int],
         exit_pos: Tuple[int, int],
         char: str = "🐒",
-        config: Optional[dict] = None
+        config: Optional[Dict[str, Any]] = None
     ) -> None:
         """Initializes the AsciiRenderer with game logic and visual settings.
 
@@ -41,7 +41,7 @@ class AsciiRenderer:
         ]
         self.engine: GameEngine = GameEngine(maze, entry, exit_pos, playlist)
         self.player_char: str = char
-        self.config: Optional[dict] = config
+        self.config: Optional[dict[str, Any]] = config
 
     def render(
         self,

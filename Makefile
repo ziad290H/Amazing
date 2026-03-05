@@ -26,13 +26,13 @@ clean:
 	find . -type f -name "*.pyo" -delete
 
 lint:
-	flake8 $(LINT_FILES)
-	mypy $(LINT_FILES) --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs
+	$(PYTHON) -m flake8
+	$(PYTHON) -m mypy $(LINT_FILES) --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs
 
 
 # Strict linting as recommended by the subject
 strict:
-	mypy $(LINT_FILES) --strict
-	flake8 $(LINT_FILES)
+	$(PYTHON) -m mypy $(LINT_FILES) --strict
+	$(PYTHON) -m flake8 
 
 .PHONY: all install run debug clean lint strict

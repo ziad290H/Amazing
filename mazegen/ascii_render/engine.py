@@ -117,7 +117,7 @@ class GameEngine:
         Instantiates a new MazeGenerator, re-applies the '42' logo,
         fully carves the paths, and resets the player to the entry point.
         """
-        from mazegenerator import MazeGenerator
+        from mazegen.mazegenerator import MazeGenerator
         self.maze = MazeGenerator(self.maze.width, self.maze.height)
         self.maze.apply_42_logo()
         list(self.maze.generate(self.entry[0], self.entry[1]))
