@@ -1,5 +1,6 @@
 from typing import Dict, Optional, List, Tuple, Any
 from coordinates42 import Coordinates
+import sys
 
 
 class Parser:
@@ -26,7 +27,7 @@ class Parser:
             "HEIGHT": 0,
             "ENTRY": (0, 0),
             "EXIT": (0, 0),
-            "OUTPUT_FILE": "output_maze.txt",
+            "OUTPUT_FILE": "maze.txt",
             "PERFECT": False,
             "SEED": None,
         }
