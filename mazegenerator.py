@@ -38,19 +38,6 @@ class MazeGenerator:
         """Checks if the given coordinates are within the grid boundaries."""
         return 0 <= x < self.width and 0 <= y < self.height
 
-    def enforce_borders(self) -> None:
-        """Sets bitmask walls for the outer perimeter of the maze."""
-        for y in range(self.height):
-            for x in range(self.width):
-                if y == 0:
-                    self.grid[y][x] |= 1
-                if x == self.width - 1:
-                    self.grid[y][x] |= 2
-                if y == self.height - 1:
-                    self.grid[y][x] |= 4
-                if x == 0:
-                    self.grid[y][x] |= 8
-
     def apply_42_logo(self) -> None:
         """Embeds a static '42' pattern into the center of the maze.
 
@@ -108,6 +95,7 @@ class MazeGenerator:
             neighbors = self.get_neighbors(cx, cy)
 
             if neighbors:
+                #unpacking
                 nx, ny, bit = random.choice(neighbors)
                 self.grid[cy][cx] &= ~bit
                 self.grid[ny][nx] &= ~self.OPPOSITE[bit]
