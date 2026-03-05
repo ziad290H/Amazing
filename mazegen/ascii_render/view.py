@@ -31,7 +31,7 @@ class MazeView:
         engine: Any,
         path_set: Set[Tuple[int, int]],
         player_char: str,
-        them: bool = 1
+        them: int = 1
     ) -> None:
         """Renders the maze grid, walls, player, exit, and solution path.
 

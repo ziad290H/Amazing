@@ -1,5 +1,5 @@
 from typing import Dict, Optional, List, Tuple, Any
-from coordinates42 import Coordinates
+from mazegen.coordinates42 import Coordinates
 import sys
 
 

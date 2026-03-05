@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "mazegen-zdaouari"
+version = "1.0.0"
+description = "A tool for generating and solving 42-themed mazes."
+authors = ["Zdaouari"]
+readme = "README.md"
+packages = [{include = "mazegen"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pygame = "^2.1.2"
+
+[tool.poetry.scripts]
+mazegen-run = "mazegen.a_maze_ing:main_wrapper"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

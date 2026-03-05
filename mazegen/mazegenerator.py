@@ -130,16 +130,19 @@ class MazeGenerator:
             Returns an empty list if no path exists.
         """
         queue = [start]
-        parent = {start: None}
+        parent: Dict[Tuple[int, int], Optional[Tuple[int, int]]] = {
+            start: None
+        }
 
         while queue:
             curr = queue.pop(0)
             if curr == end:
                 # Reconstruction logic
                 path = []
-                while curr is not None:
-                    path.append(curr)
-                    curr = parent[curr]
+                temp_curr: Optional[Tuple[int, int]] = curr
+                while temp_curr is not None:
+                    path.append(temp_curr)
+                    temp_curr = parent[temp_curr]
                 return path[::-1]
 
             cx, cy = curr

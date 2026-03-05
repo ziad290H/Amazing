@@ -29,7 +29,6 @@ lint:
 	flake8 $(LINT_FILES)
 	mypy $(LINT_FILES) --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs
 
-# --- OPTIONAL ENHANCEMENTS ---
 
 # Strict linting as recommended by the subject
 strict:

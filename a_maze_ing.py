@@ -2,11 +2,11 @@ import sys
 import curses
 import time
 from typing import Any, Dict
-from parsing import Parser
-from mazegenerator import MazeGenerator
-from ascii_render import AsciiRenderer
-from intro import play_intro
-from hexadecimale import HexEncoder
+from mazegen.parsing import Parser
+from mazegen.mazegenerator import MazeGenerator
+from mazegen.ascii_render.renderer import AsciiRenderer
+from mazegen.intro import play_intro
+from mazegen.hexadecimale import HexEncoder
 
 
 def main(stdscr: Any, config: Dict[str, Any]) -> None:
@@ -67,7 +67,7 @@ def main(stdscr: Any, config: Dict[str, Any]) -> None:
 
     # Reset terminal background and clear screen on exit
     stdscr.bkgd(' ', curses.color_pair(0))
-    stdscr.clear()
+    stdscr.erase()
 
 
 if __name__ == "__main__":
@@ -78,6 +78,12 @@ if __name__ == "__main__":
     try:
         parser = Parser(sys.argv[1])
         config_data = parser.parse()
+        if config_data is None:
+            print(
+                "Error: Configuration file is empty or invalide"
+            )
+            sys.exit(1)
         curses.wrapper(main, config_data)
     except Exception as e:
         print(f"Fatal Error: {e}")
+        sys.exit(1)

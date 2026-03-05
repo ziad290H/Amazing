@@ -69,7 +69,7 @@ class AsciiRenderer:
             curses.init_pair(3, curses.COLOR_GREEN, -1)
         except curses.error:
             pass
-        stdscr.clear()
+        stdscr.erase()
         sh, sw = stdscr.getmaxyx()
         path_set = set(path) if path else set()
 
