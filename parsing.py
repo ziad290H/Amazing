@@ -85,10 +85,13 @@ class Parser:
 
         except FileNotFoundError:
             print(f"Error: The File '{self.filepath}' Was Not Found!")
+            sys.exit(1)
         except PermissionError:
             print(f"Error: No permission to access '{self.filepath}'.")
+            sys.exit(1)
         except ValueError as e:
             print(f"Configuration Error: {e}")
+            sys.exit(1)
         return None
 
     def assign_value(self, key: str, value: str) -> None:
