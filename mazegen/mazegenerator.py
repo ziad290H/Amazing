@@ -3,7 +3,7 @@ import random
 
 
 class MazeGenerator:
-    """Handles randomized maze generation and pathfinding logic.
+    """Handles randomiz                                             ed maze generation and pathfinding logic.
 
     Uses a Recursive Backtracker algorithm for generation and a Breadth-First
     Search (BFS) for solving. Supports custom seeds and '42' logo embedding.
