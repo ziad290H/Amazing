@@ -39,6 +39,16 @@ class AsciiRenderer:
             "saha.mp3", "Dance_it_out.mp3", "joy_to_the_world.mp3",
             "game_over.mp3", "summer_joy.mp3"
         ]
+        playlist = [
+        "Dance_it_out.mp3",
+        "game_over.mp3",
+        "Invincible.mp3",
+        "joy_to_the_world.mp3",
+        "oioioi.mp3",
+        "saha.mp3",
+        "summer_joy.mp3",
+        "SynCole.mp3"
+        ]
         self.engine: GameEngine = GameEngine(maze, entry, exit_pos, playlist)
         self.player_char: str = char
         self.config: Optional[dict[str, Any]] = config
