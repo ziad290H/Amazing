@@ -7,6 +7,7 @@ from mazegen.mazegenerator import MazeGenerator
 from mazegen.ascii_render.renderer import AsciiRenderer
 from mazegen.intro import play_intro
 from mazegen.hexadecimale import HexEncoder
+import os
 
 
 def main(stdscr: Any, config: Dict[str, Any]) -> None:
@@ -87,3 +88,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Fatal Error: {e}")
         sys.exit(1)
+    except KeyboardInterrupt:
+        os.system("clear")
+        print("Exiting the game !")

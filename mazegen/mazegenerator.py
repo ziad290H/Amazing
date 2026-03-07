@@ -147,6 +147,7 @@ class MazeGenerator:
 
             cx, cy = curr
             val = self.grid[cy][cx]
+            8
 
             # N=1, E=2, S=4, W=8
             directions = [((cx, cy - 1), 1), ((cx + 1, cy), 2),

@@ -30,42 +30,25 @@ class Coordinates:
 
     @staticmethod
     def _42_cells(maze_w: int, maze_h: int) -> List[Tuple[int, int]]:
-        """Calculates the list of cells comprising the '42' logo.
-
-        Determines the coordinates for the '4' and '2' digit patterns
-        based on the center of the provided maze dimensions.
-
-        Args:
-            maze_w (int): The total width of the maze.
-            maze_h (int): The total height of the maze.
-
-        Returns:
-            List[Tuple[int, int]]: A list of (x, y) coordinates representing
-                the logo's structural blocks.
         """
-        mid_x = maze_w // 2
-        mid_y = maze_h // 2
-
-        cells = [
-            (mid_x + 2, mid_y - 2),
-            (mid_x + 1, mid_y - 2),
-            (mid_x + 3, mid_y - 2),
-            (mid_x + 3, mid_y - 1),
-            (mid_x + 3, mid_y),
-            (mid_x + 2, mid_y),
-            (mid_x + 1, mid_y),
-            (mid_x + 1, mid_y + 1),
-            (mid_x + 1, mid_y + 2),
-            (mid_x + 2, mid_y + 2),
-            (mid_x + 3, mid_y + 2),
-            # Transition to second digit
-            (mid_x - 3, mid_y - 2),
-            (mid_x - 3, mid_y - 1),
-            (mid_x - 3, mid_y),
-            (mid_x - 3, mid_y + 1),
-            (mid_x - 2, mid_y + 1),
-            (mid_x - 1, mid_y),
-            (mid_x - 1, mid_y + 1),
-            (mid_x - 1, mid_y + 2)
+        Calculates logo cells using the exact same logic as the Generator.
+        """
+        pattern = [
+            [1, 0, 1, 0, 1, 1, 1],
+            [1, 0, 1, 0, 0, 0, 1],
+            [1, 1, 1, 0, 1, 1, 1],
+            [0, 0, 1, 0, 1, 0, 0],
+            [0, 0, 1, 0, 1, 1, 1]
         ]
+        p_h, p_w = len(pattern), len(pattern[0])
+        
+        # Exact same centering math as MazeGenerator
+        start_x = (maze_w - p_w) // 2
+        start_y = (maze_h - p_h) // 2
+        
+        cells = []
+        for y in range(p_h):
+            for x in range(p_w):
+                if pattern[y][x] == 1:
+                    cells.append((start_x + x, start_y + y))
         return cells
