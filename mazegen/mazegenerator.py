@@ -30,8 +30,13 @@ class MazeGenerator:
                     optional randomization seed."""
         self.width = width
         self.height = height
+        self.seed = seed
+
         if seed is not None:
-            random.seed(str(seed))
+            self.seed = seed
+        else:
+            self.seed = random.randint(0, 10**6)
+
         self.grid = [[0xF for _ in range(width)] for _ in range(height)]
         self.visited = [[False for _ in range(width)] for _ in range(height)]
 

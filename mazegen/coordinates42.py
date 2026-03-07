@@ -41,11 +41,9 @@ class Coordinates:
             [0, 0, 1, 0, 1, 1, 1]
         ]
         p_h, p_w = len(pattern), len(pattern[0])
-        
         # Exact same centering math as MazeGenerator
         start_x = (maze_w - p_w) // 2
         start_y = (maze_h - p_h) // 2
-        
         cells = []
         for y in range(p_h):
             for x in range(p_w):

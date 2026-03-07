@@ -21,7 +21,6 @@ def main(stdscr: Any, config: Dict[str, Any]) -> None:
         config (Dict[str, Any]): Dictionary containing configuration parameters
             such as dimensions, entry/exit points, and file paths.
     """
-    # Capture the emoji chosen by the user
     player_emoji = play_intro(stdscr)
 
     curses.curs_set(0)
@@ -29,7 +28,8 @@ def main(stdscr: Any, config: Dict[str, Any]) -> None:
     maze = MazeGenerator(
         width=config["WIDTH"],
         height=config["HEIGHT"],
-        seed=config.get("SEED")
+        # seed=config.get("SEED"),
+        seed=13
     )
 
     renderer = AsciiRenderer(
@@ -38,8 +38,6 @@ def main(stdscr: Any, config: Dict[str, Any]) -> None:
 
     maze.apply_42_logo()
 
-    # Animate maze generation
-    # making the maze building wall by wall and make us see the progress
     for _ in maze.generate(config["ENTRY"][0], config["ENTRY"][1]):
         renderer.render(stdscr)
         stdscr.refresh()
@@ -66,7 +64,6 @@ def main(stdscr: Any, config: Dict[str, Any]) -> None:
     # Start the interactive game loop
     renderer.run(stdscr)
 
-    # Reset terminal background and clear screen on exit
     stdscr.bkgd(' ', curses.color_pair(0))
     stdscr.erase()
 

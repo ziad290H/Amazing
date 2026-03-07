@@ -15,7 +15,7 @@ class Parser:
             "HEIGHT": 0,
             "ENTRY": (0, 0),
             "EXIT": (0, 0),
-            "OUTPUT_FILE": "output_maze.txt",
+            "OUTPUT_FILE": "maze.txt",
             "PERFECT": False,
             "SEED": None,
         }
@@ -86,6 +86,8 @@ class Parser:
                     self.config[key] = None
             elif key == "OUTPUT_FILE":
                 self.config[key] = value
+            elif key == "SEED":
+                self.config[key] = int(value)
         except Exception:
             raise ValueError(f"Could Not Parse '{value} for this key '{key}")
 

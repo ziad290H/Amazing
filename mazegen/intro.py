@@ -55,7 +55,6 @@ def play_intro(stdscr: curses.window) -> str:
     stdscr.addstr(sh // 2, (sw - len(skip_msg)) // 2, skip_msg, curses.A_BOLD)
     stdscr.refresh()
     key = stdscr.getch()
-    
     if key not in [ord('s'), ord('S')]:
         # Only run the full intro if NOT skipping
         title = "PROJECT AMAZING"
@@ -65,14 +64,16 @@ def play_intro(stdscr: curses.window) -> str:
 
         for i in range(len(authors) + 1):
             stdscr.erase()
-            stdscr.addstr(sh // 3, (sw - len(authors)) // 2, authors[:i], curses.A_BOLD)
+            stdscr.addstr(sh // 3, (sw - len(authors)) // 2,
+                          authors[:i], curses.A_BOLD)
             stdscr.refresh()
             time.sleep(0.05)
         time.sleep(0.5)
 
         for i in range(len(subtitle) + 1):
             stdscr.erase()
-            stdscr.addstr(sh // 2 - 1, (sw - len(title)) // 2, title, curses.A_BOLD)
+            stdscr.addstr(sh // 2 - 1, (sw - len(title)) // 2,
+                          title, curses.A_BOLD)
             stdscr.addstr(sh // 2 + 1, (sw - len(subtitle)) // 2, subtitle[:i])
             stdscr.refresh()
             time.sleep(0.05)
@@ -85,7 +86,8 @@ def play_intro(stdscr: curses.window) -> str:
 
         stdscr.erase()
         ask_expl = "Do you want an explanation for the game? (Y/N)"
-        stdscr.addstr(sh // 2, (sw - len(ask_expl)) // 2, ask_expl, curses.A_BOLD)
+        stdscr.addstr(sh // 2, (sw - len(ask_expl)) // 2,
+                      ask_expl, curses.A_BOLD)
         stdscr.refresh()
 
         while True:
@@ -94,7 +96,8 @@ def play_intro(stdscr: curses.window) -> str:
                 stdscr.erase()
                 explanation = get_instructions()
                 for idx, line in enumerate(explanation):
-                    stdscr.addstr(sh // 2 - 4 + idx, (sw - len(line)) // 2, line)
+                    stdscr.addstr(sh // 2 - 4 + idx,
+                                  (sw - len(line)) // 2, line)
                 stdscr.refresh()
                 stdscr.getch()
                 break
@@ -109,7 +112,8 @@ def play_intro(stdscr: curses.window) -> str:
     while True:
         stdscr.erase()
         prompt = "CHOOSE YOUR CHARACTER"
-        stdscr.addstr(sh // 4, (sw - len(prompt)) // 2, prompt, curses.A_UNDERLINE)
+        stdscr.addstr(sh // 4, (sw - len(prompt)) // 2,
+                      prompt, curses.A_UNDERLINE)
         stdscr.addstr(sh // 2 - 2, sw // 3 - 5, "1. MONKEY")
         for idx, row in enumerate(char1_icon):
             stdscr.addstr(sh // 2 + idx, sw // 3 - 5, "".join(row))
@@ -129,7 +133,8 @@ def play_intro(stdscr: curses.window) -> str:
 
     stdscr.erase()
     final_msg = f"Starting adventure with {chosen_char}!"
-    stdscr.addstr(sh // 2, (sw - len(final_msg)) // 2, final_msg, curses.A_BOLD)
+    stdscr.addstr(sh // 2, (sw - len(final_msg)) // 2,
+                  final_msg, curses.A_BOLD)
     stdscr.refresh()
     time.sleep(2)
     return chosen_char
