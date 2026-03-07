@@ -9,7 +9,6 @@ class Cell:
     is part of a static structural block.
 
     Attributes:
-        flag (bool): A class-level indicator for general state tracking.
         walls (Dict[str, bool]): A mapping of directions ('N', 'E', 'S', 'W')
             to their respective wall states
             (True for exists, False for carved).
@@ -17,7 +16,6 @@ class Cell:
         blocked (bool): True if the cell is part of the '42' logo block.
     """
 
-    flag: bool = True
 
     def __init__(self) -> None:
         """Initializes a new maze cell with all walls intact and unvisited."""

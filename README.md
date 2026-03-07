@@ -84,6 +84,7 @@ Packaging:
 
 
 
+
 ____**Resources**
 
 
@@ -144,6 +145,29 @@ Ziad handled the game logic, BFS pathfinding, ASCII/Hex transformations, and the
 **Tools**
 <br>For this project, I used several tools and libraries to implement and visualize the maze generator. The core logic was written in **Python**, using built-in modules such as **random** for randomized maze generation and **typing** to improve code readability and maintainability through type hints. To create the interactive terminal visualization, I used the **curses** library, which allows efficient screen updates and keyboard input handling in a text-based interface. Additionally, **Git** was used for version control to track changes during development, and **GitHub** for hosting and sharing the project. These tools helped structure the code, simplify debugging, and provide a smooth visualization of the maze generation and solving process.
 </tr>
+</td></tr>
+
+<tr bgcolor="#1877bbb2"><td>
+
+In accordance with the project management requirements the subject, our team utilized a collaborative approach where responsibilities were divided based on technical specializations to ensure a cohesive workflow. Momahdam spearheaded the core generation engine by implementing the Randomized DFS algorithm and creating the fluid maze animations and rendering systems; additionally, they managed the input parsing logic, final branch merging, and the structural integrity of the project's documentation, and cells pattern.<br>Simultaneously, Ziad focused on the game logic and the Player Mode enhancements, integrating the ASCII visuals, bonus mechanics, and the BFS solver for automated pathfinding. He also handled the technical translation of the maze into hexadecimal output files, while maintaining the build system through a robust Makefile.
+
+Initially, our planning followed a linear trajectory, but we evolved into an agile cycle to better handle the complexities of the hexadecimal transformations and rendering synchronization. What worked particularly well was our modular code structure, which allowed the generation and solving algorithms to be tested independently of the UI. While our communication was consistent, we identified that earlier integration of the curses and pygame components could have streamlined the final debugging phase. To maintain our workflow, we relied on Git for version control<br>
+
+**Algorithm Choice**
+:We implemented Recursive Backtracking (DFS) to ensure a "perfect" maze with no loops. We chose this because it creates long, winding corridors with fewer dead-ends, providing a more challenging and aesthetic experience for the Player Mode.
+
+**Code Reusability**
+:The BFS Solver and the core Grid Data Structure are designed as independent modules. They can be reused in any grid-based pathfinding project by simply importing the logic without the curses rendering dependency.
+
+**Project Management**
+:Team Roles
+Momahdam managed the DFS algorithm, rendering animations, parsing logic, and documentation. Ziad handled the game logic, BFS pathfinding, ASCII/Hex transformations, and the build system via the Makefile.
+
+**Planning Evolution**
+:Our initial plan was a linear "Logic-first" approach, but it evolved into an agile cycle to handle hexadecimal conversion hurdles. This shift allowed us to refine the player mechanics while simultaneously perfecting the generation engine.
+
+**Retrospective**
+:Our modular architecture worked exceptionally well, allowing for independent testing of algorithms. However, we could improve our early-stage integration testing to avoid the minor UI synchronization issues we faced near the deadline, hearthsystem and peace 18 stuffs.
 </td></tr>
 
 </table>
