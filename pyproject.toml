@@ -2,7 +2,7 @@
 name = "mazegen-42"
 version = "1.0.0"
 description = "A tool for generating and solving 42-themed mazes."
-authors = ["Zdaouari"]
+authors = ["Zdaouari", "momahdam"]
 readme = "README.md"
 packages = [{include = "mazegen"}]
 

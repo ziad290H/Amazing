@@ -74,16 +74,44 @@ Packaging:
 
 
 
+<tr><td>
 
+____**Configuration File Format**
 
+The project utilizes a configuration file to define the environment parameters. As per the **IV.3 requirements**, the file follows a `KEY=VALUE` format. Lines starting with `#` are treated as comments and ignored.
+
+**Mandatory Keys:**
+<ul>
+    <li><code>WIDTH</code>: Number of horizontal cells (e.g., <code>WIDTH=10</code>)</li>
+    <li><code>HEIGHT</code>: Number of vertical cells (e.g., <code>HEIGHT=10</code>)</li>
+    <li><code>ENTRY</code>: Entry coordinates x,y (e.g., <code>ENTRY=0,0</code>)</li>
+    <li><code>EXIT</code>: Exit coordinates x,y (e.g., <code>EXIT=8,8</code>)</li>
+    <li><code>OUTPUT_FILE</code>: Filename for the saved maze (e.g., <code>OUTPUT_FILE=maze.txt</code>)</li>
+    <li><code>PERFECT</code>: Boolean to determine if the maze is a spanning tree (e.g., <code>PERFECT=False</code>)</li>
+</ul>
+
+**Optional Keys:**
+<ul>
+    <li><code>SEED</code>: Integer for reproducible generation (e.g., <code>SEED=42</code>)</li>
+</ul>
+
+**Example `config.txt`:**
+<pre>
+# Maze Configuration
+WIDTH=10
+HEIGHT=10
+ENTRY=0,0
+EXIT=8,8
+OUTPUT_FILE=maze.txt
+PERFECT=False
+SEED=42
+</pre>
+
+</td></tr>
 
 </ul>
 </td></tr><tr>
 <tr><td>
-
-
-
-
 
 ____**Resources**
 
