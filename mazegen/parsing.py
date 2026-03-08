@@ -120,6 +120,12 @@ class Parser:
                     self.config[key] = None
             elif key == "OUTPUT_FILE":
                 self.config[key] = value
+            elif key == "SEED":
+                clean = value.replace('(', '').replace(')', '').strip()
+                if ',' in clean:
+                    self.config[key] = hash(tuple(map(int, clean.split(','))))
+                else:
+                    self.config[key] = int(clean)
         except Exception:
             raise ValueError(f"Could not parse '{value}' for key '{key}'.")
 
@@ -160,7 +166,9 @@ class Parser:
             raise ValueError("PERFECT value must be a boolean.")
 
         out_file = self.config["OUTPUT_FILE"]
-        if not out_file or out_file in [".", "..", "./", "../", "/"]:
+        try:
+            open(out_file, "w")
+        except IsADirectoryError:
             raise ValueError("Invalid output file path.")
 
         return True

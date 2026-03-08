@@ -61,7 +61,6 @@ def main(stdscr: Any, config: Dict[str, Any]) -> None:
             f"the file {config['OUTPUT_FILE']}"
         )
 
-    # Start the interactive game loop
     renderer.run(stdscr)
 
     stdscr.bkgd(' ', curses.color_pair(0))
@@ -88,5 +87,3 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         os.system("clear")
         print("Exiting the game !")
-else:
-    pass

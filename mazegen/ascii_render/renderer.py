@@ -4,6 +4,7 @@ import os
 from typing import Any, List, Optional, Tuple, Dict
 from .engine import GameEngine
 from .view import MazeView
+from mazegen.hexadecimale import HexEncoder
 
 
 class AsciiRenderer:
@@ -134,31 +135,23 @@ class AsciiRenderer:
         except curses.error:
             pass
 
-        # State variable for toggling solution visibility
         them_idx = 1
         show_sol = False
 
-        # --- MAIN GAME LOOP ---
         while True:
-            # 1. Update logic: Always get a fresh path from current
-            # position to exit
             px, py = self.engine.player_pos
             ex, ey = self.engine.exit
             cur_pos = (int(px), int(py))
             exit_pos = (int(ex), int(ey))
-            # Note: Ensure your solver expects (x, y) or [y, x] consistently
             path = self.engine.maze.solve(cur_pos, exit_pos)
 
-            # 2. Render current frame
             self.render(stdscr, path if show_sol else None, them=them_idx)
 
-            # 3. Input Handling
             key = stdscr.getch()
 
             if key in (ord('q'), ord('Q'), 27):  # Quit
                 break
 
-            # Music Toggle & Track Switch
             if key in (ord('m'), ord('M')):
                 if self.engine.music_playing:
                     pygame.mixer.music.pause()
@@ -176,12 +169,27 @@ class AsciiRenderer:
             elif key in (ord('s'), ord('S')):
                 show_sol = not show_sol
                 if show_sol and path:
-                    # Trigger the animation sequence if showing the path
                     self.animate_path(stdscr, path)
 
             elif key in (ord('r'), ord('R')):
                 self.engine.regenerate()
-                show_sol = False  # Reset solution view on new maze
+                show_sol = False
+                if self.config and self.config.get("OUTPUT_FILE"):
+                    try:
+                        new_path = self.engine.maze.solve(
+                            self.engine.entry, self.engine.exit
+                        )
+                        encoder = HexEncoder(
+                            self.engine.maze.grid,
+                            self.engine.maze.height,
+                            self.engine.entry,
+                            self.engine.exit,
+                            new_path
+                        )
+                        with open(self.config["OUTPUT_FILE"], "w") as f:
+                            f.write(encoder.encode())
+                    except Exception:
+                        pass
             elif key in (ord('c'), ord('C')):
                 them_idx = (them_idx + 1) % 3
 

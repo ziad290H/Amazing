@@ -49,7 +49,6 @@ class MazeGenerator:
             self.seed = seed
         else:
             self.seed = random.randint(0, 10**6)
-
         self.grid = [[0xF for _ in range(width)] for _ in range(height)]
         self.visited = [[False for _ in range(width)] for _ in range(height)]
 
@@ -106,6 +105,10 @@ class MazeGenerator:
         Yields:
             List[Tuple[int, int]]: The current stack for animation purposes.
         """
+        if self.seed:
+            random.seed(self.seed)
+        # with open("test.txt", "w") as f:
+        #     f.write(str(self.seed))
         stack = [(start_x, start_y)]
         self.visited[start_y][start_x] = True
 
@@ -131,7 +134,7 @@ class MazeGenerator:
               start: Tuple[int, int],
               end: Tuple[int, int]
               ) -> List[Tuple[int, int]]:
-        # Standard BFS__ Breadth-First Search (BFS)
+        # BFS
         """Finds the shortest path between two points
                  using Breadth-First Search (BFS).
 
@@ -175,7 +178,7 @@ class MazeGenerator:
 
             for (nx, ny), bit in directions:
                 if self.in_bounds(nx, ny) and (nx, ny) not in parent:
-                    if not (val & bit):  # If NO wall in this direction
+                    if not (val & bit):
                         parent[(nx, ny)] = curr
                         queue.append((nx, ny))
 
