@@ -28,8 +28,8 @@ def main(stdscr: Any, config: Dict[str, Any]) -> None:
     maze = MazeGenerator(
         width=config["WIDTH"],
         height=config["HEIGHT"],
-        # seed=config.get("SEED"),
-        seed=13
+        seed=config.get("SEED"),
+        perfect=config.get("PERFECT", True)
     )
 
     renderer = AsciiRenderer(
@@ -88,3 +88,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         os.system("clear")
         print("Exiting the game !")
+else:
+    pass
