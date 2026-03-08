@@ -115,10 +115,15 @@ class GameEngine:
         """Resets the game state with a new randomly generated maze.
 
         Instantiates a new MazeGenerator, re-applies the '42' logo,
-        fully carves the paths, and resets the player to the entry point.
+        fully carves the paths (no animation), and resets the player.
+        Preserves the perfect/imperfect setting of the previous maze.
         """
         from mazegen.mazegenerator import MazeGenerator
-        self.maze = MazeGenerator(self.maze.width, self.maze.height)
+        self.maze = MazeGenerator(
+            self.maze.width,
+            self.maze.height,
+            perfect=getattr(self.maze, "perfect", True)
+        )
         self.maze.apply_42_logo()
         list(self.maze.generate(self.entry[0], self.entry[1]))
         self.player_pos = list(self.entry)
