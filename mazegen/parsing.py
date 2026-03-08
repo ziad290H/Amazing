@@ -59,7 +59,8 @@ class Parser:
 
                     if '=' not in line:
                         raise ValueError(
-                            f"Use # for comments in {self.filepath}"
+                            "Make sure to Use # for "
+                            f"comments in {self.filepath}"
                         )
 
                     parts = line.split('=')
@@ -71,7 +72,7 @@ class Parser:
                     key, value = parts[0].strip().upper(), parts[1].strip()
 
                     if key not in self.config:
-                        raise ValueError(f"Unsupported key: {key}")
+                        raise ValueError(f"This key: {key} is Unsupported")
 
                     self.assign_value(key, value)
 
@@ -79,7 +80,7 @@ class Parser:
                         keys_count += 1
 
             if keys_count < len(required_keys):
-                raise ValueError("Required configuration entries are missing.")
+                raise ValueError("Required config variables are missing.")
 
             if self.validate():
                 return self.config
@@ -144,31 +145,31 @@ class Parser:
         w, h = self.config["WIDTH"], self.config["HEIGHT"]
 
         if w < 9 or h < 7:
-            raise ValueError("Maze dimensions too small for the '42' block.")
+            raise ValueError("Maze dimensions too small for the '42' pattern.")
 
         if self.config["ENTRY"] == self.config["EXIT"]:
-            raise ValueError("Entry and Exit must be different.")
+            raise ValueError("The Entry and Exit must be different.")
 
         entry_coords: Tuple[int, int] = self.config["ENTRY"]
         exit_coords: Tuple[int, int] = self.config["EXIT"]
 
         logo_cells = Coordinates._42_cells(w, h)
         if entry_coords in logo_cells or exit_coords in logo_cells:
-            raise ValueError("Entry/Exit cannot be located inside '42' block.")
+            raise ValueError("Entry/Exit can't be inside '42' pattern.")
 
         if not (0 <= entry_coords[0] < w and 0 <= entry_coords[1] < h):
             raise ValueError(f"Entry {entry_coords} is outside the grid.")
 
         if not (0 <= exit_coords[0] < w and 0 <= exit_coords[1] < h):
-            raise ValueError(f"Exit {exit_coords} is outside the grid.")
+            raise ValueError(f"Exit {exit_coords} are outside the grid.")
 
         if self.config["PERFECT"] is None:
-            raise ValueError("PERFECT value must be a boolean.")
+            raise ValueError("PERFECT value must be boolean.")
 
         out_file = self.config["OUTPUT_FILE"]
         try:
             open(out_file, "w")
         except IsADirectoryError:
-            raise ValueError("Invalid output file path.")
+            raise ValueError("The output file path is invalid.")
 
         return True
