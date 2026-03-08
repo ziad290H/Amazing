@@ -25,12 +25,25 @@ class MazeGenerator:
     }
     OPPOSITE: Dict[int, int] = {1: 4, 2: 8, 4: 1, 8: 2}
 
-    def __init__(self, width: int, height: int, seed: Optional[int] = None):
-        """Initializes the maze grid and applies
-                    optional randomization seed."""
+    def __init__(
+        self,
+        width: int,
+        height: int,
+        seed: Optional[int] = None,
+        perfect: bool = True
+    ):
+        """Initializes the maze grid and applies optional randomization seed.
+
+        Args:
+            width (int): Horizontal dimension of the maze.
+            height (int): Vertical dimension of the maze.
+            seed (Optional[int]): Random seed for reproducibility.
+            perfect (bool): If True, one unique path between any two cells.
+            if False, extra walls are removed to create loops/multiple routes.
+        """
         self.width = width
         self.height = height
-        self.seed = seed
+        self.perfect = perfect
 
         if seed is not None:
             self.seed = seed
@@ -111,6 +124,9 @@ class MazeGenerator:
                 stack.pop()
             yield stack
 
+        if not self.perfect:
+            self.add_loops()
+
     def solve(self,
               start: Tuple[int, int],
               end: Tuple[int, int]
@@ -152,7 +168,6 @@ class MazeGenerator:
 
             cx, cy = curr
             val = self.grid[cy][cx]
-            8
 
             # N=1, E=2, S=4, W=8
             directions = [((cx, cy - 1), 1), ((cx + 1, cy), 2),
@@ -165,3 +180,25 @@ class MazeGenerator:
                         queue.append((nx, ny))
 
         return []  # No path found
+
+    def add_loops(self, loop_factor: float = 0.12) -> None:
+        """Removes random interior walls to create loops (imperfect maze).
+
+        Args:
+            loop_factor (float): Fraction of candidate walls to remove.
+                Default 0.12 gives a loopy but still maze-like feel.
+        """
+        rng = random.Random(self.seed)
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.grid[y][x] == 15:
+                    continue
+                for dx, dy, bit in self.DIRECTIONS.values():
+                    nx, ny = x + dx, y + dy
+                    if not self.in_bounds(nx, ny):
+                        continue
+                    if self.grid[ny][nx] == 15:
+                        continue
+                    if (self.grid[y][x] & bit) and rng.random() < loop_factor:
+                        self.grid[y][x] &= ~bit
+                        self.grid[ny][nx] &= ~self.OPPOSITE[bit]
