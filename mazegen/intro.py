@@ -104,7 +104,6 @@ def play_intro(stdscr: curses.window) -> str:
             elif key in [ord('N'), ord('n')]:
                 break
 
-    # Character selection always runs
     char1_icon = [["🌿", "🌿", "🌿"], ["🌿", "🐒", "🌿"], ["🌿", "🌿", "🌿"]]
     char2_icon = [["🌸", "🥕", "🌸"], ["🥕", "🐇", "🥕"], ["🌸", "🥕", "🌸"]]
     chosen_char = "🐒"
