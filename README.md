@@ -1,6 +1,5 @@
 <table bgcolor="#0000">
 <tr><td>
-
 <h2><i>This project has been created as part of the 42 curriculum by zdaouari, momahdam</i></h2>
 
 ____**Description**
